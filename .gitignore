@@ -3,16 +3,12 @@
 .RData
 .Ruserdata
 .Rapp.history
-
 *.Rproj
-
 .DS_Store
 inst/doc
-
 cran-comments.md
-
 R/compute_nb_perm_sim.R
 doc
 Meta
-
 GSE107991
+checkSPweights.R

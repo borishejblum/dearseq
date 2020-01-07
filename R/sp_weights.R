@@ -287,8 +287,10 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
         } else {
             kern_fit <- vapply(mu_x, w, FUN.VALUE = 1.1)
             weights <- 1/matrix(kern_fit, nrow = n, ncol = p, byrow = TRUE)
-            # f_interp <- stats::approxfun(x = mu_avg, kern_fit, rule = 2)
-            # weights <- 1/apply(mu, 2, f_interp)
+            #NB: byrow=T for genesets (recycling the weights) but F for genewise
+            #Alternative approximation:
+            #f_interp <- stats::approxfun(x = mu_avg, kern_fit, rule = 2)
+            #weights <- 1/apply(mu, 2, f_interp)
         }
 
     } else {
@@ -302,12 +304,12 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
             sq_err <- sq_err[-which(is.na(sq_err))]
             lse <- lse[-which(is.na(lse))]
         }
-        smth <- KernSmooth::locpoly(x = c(mu_x), y = c(lse), degree = 2,
+        smth <- KernSmooth::locpoly(x = c(mu_x), y = c(lse), degree = 1,
                                     kernel = kernel, bandwidth = bw)
         w <- (1/exp(stats::approx(x = reverse_trans(smth$x), y = smth$y,
                                   xout = reverse_trans(mu_x),
                                   rule = 2)$y))
-        weights <- matrix(w, nrow(mu_x), ncol(mu_x))
+        weights <- matrix(w, nrow = n, ncol = p)
     }
     if(sum(weights<0)>1){
         stop("negative variance weights estimated: please contact the authors",

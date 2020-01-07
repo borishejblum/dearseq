@@ -184,7 +184,6 @@ We investigates 2 gene sets that were derived in a data-driven manner By Baduel
 ```{r baduel, eval=TRUE, echo=TRUE}
 library(dearseq)
 library(SummarizedExperiment)
-library(BiocSet)
 data('baduel_5gs')
 se2 <- SummarizedExperiment(assay = log2(expr_norm_corr+1), 
                             colData = design)
