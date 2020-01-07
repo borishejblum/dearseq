@@ -39,10 +39,12 @@ articles:
 
 ## Installation
 
-***`dearseq` is currently under review to be included in Bioconductor***
+***`dearseq` is currently [under
+review](https://github.com/Bioconductor/Contributions/issues/1307#issuecomment-564697938)
+to be included in [Bioconductor](http://www.bioconductor.org)***
 
 Meanwhile, the easiest way to get `dearseq` is to install its
-development version from the `dev`branch on
+development version from the `dev` branch on
 [GitHub](https://github.com/borishejblum/dearseq):
 
 ``` r
