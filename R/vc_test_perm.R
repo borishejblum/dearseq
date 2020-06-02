@@ -139,25 +139,63 @@ vc_test_perm <- function(y, x, indiv = rep(1, nrow(x)), phi, w,
                                     progressbar = progressbar,
                                     parallel_comp = parallel_comp,
                                     nb_cores = nb_cores)
-
+    
     if (genewise_pvals) {
         gene_scores_obs <- score_list_res$gene_scores_unscaled
         gene_scores_perm <- score_list_res$gene_scores_unscaled_perm
-
+        
         nperm_sup_obs <- rowSums(gene_scores_perm >= gene_scores_obs)
         #pvals_naive <- nperm_sup_obs/n_perm
         #pvals_u <- (nperm_sup_obs + 1)/(n_perm +1)
-        pvals_e <- perm_pe(nperm_sup_obs, nperm_eff = n_perm,
+        pvals_e <- perm_pe(nperm_sup_obs, nperm_eff = n_perm*2,
                            total_possible_nperm = N_possible_perms)
-        names(pvals_e) <- names(gene_scores_obs)
-
+        ind_threshold <- which(nperm_sup_obs<10)
+        #ind_threshold <- as.numeric(which(pvals_e<=2/(n_perm/10)))
+        n_perm_threshold <- n_perm*2
+        
+        while((min(pvals_e)!=(0.05/length(pvals_e)))&(length(ind_threshold)>1)&(n_perm_threshold<=128000)){
+            score_list_res <- vc_score_2use(y = y[ind_threshold,], x = x, indiv = indiv_fact, phi = phi,
+                                            w = w[ind_threshold,], Sigma_xi = Sigma_xi, na_rm = na.rm,
+                                            n_perm = n_perm_threshold,
+                                            progressbar = progressbar,
+                                            parallel_comp = parallel_comp,
+                                            nb_cores = nb_cores)
+            
+            gene_scores_obs_threshold <- score_list_res$gene_scores_unscaled
+            gene_scores_perm_threshold <- score_list_res$gene_scores_unscaled_perm
+            nperm_sup_obs_threshold <- rowSums(gene_scores_perm_threshold >= gene_scores_obs_threshold)
+            pvals_e_threshold <- perm_pe(nperm_sup_obs_threshold, nperm_eff = n_perm_threshold*2,
+                                         total_possible_nperm = N_possible_perms)
+            
+            gene_scores_obs[ind_threshold] <- gene_scores_obs_threshold
+            pvals_e[ind_threshold] <- pvals_e_threshold
+            ind_threshold <- ind_threshold[which(nperm_sup_obs_threshold<10)]
+            n_perm_threshold <- n_perm_threshold*2
+            
+        }
+        
+        
+        if (plot) {
+            t <- c(1:length(pvals_e))
+            s <- (t/length(pvals_e))*0.05
+            df_plot_perm <- data.frame("y"=sort(pvals_e),"x"=c(1:length(pvals_e)))
+            ggplot()+ scale_y_log10()+
+                geom_point(data=df_plot_perm,aes(x=x,y=y,color=viridis(4)[1]),size=0.5)+
+                geom_line(data=df_plot_perm,aes(y=s,x=x,color=viridis(4)[2]),size=0.5) +
+                geom_line(data=df_plot_perm, aes(y=0.05,x=x,color="red"),size=0.5) +
+                scale_color_manual(name = "", labels = c("B-H limit","p-values","5% threshold"), values = c(viridis(4)[c(1,2)],"red")) +
+                xlab("rank") + ylab("log10 scale") + theme_bw() + xlim(0, length(df_plot_perm$y))
+        }
+        
+        
+        
         ans <- list(gene_scores_obs = gene_scores_obs, gene_pvals = pvals_e)
     } else {
         pvals_u <- (sum(score_list_res$scores_perm >=
                             score_list_res$score) + 1)/(n_perm + 1)
-
+        
         ans <- list(set_score_obs = score_list_res$score, set_pval = pvals_u)
-
+        
     }
     return(ans)
 }
