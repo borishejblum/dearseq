@@ -10,7 +10,7 @@ Authors@R: c(person("Denis", "Agniel", role = c("aut"),
 	                  email = "boris.hejblum@u-bordeaux.fr"),
 	           person("Marine", "Gauthier", role = c("aut"),
 	                  email = "marine.gauthier@u-bordeaux.fr"))
-Depends: R (>= 3.6.0)
+Depends: R (>= 3.6.3)
 Imports: CompQuadForm, ggplot2, KernSmooth, matrixStats, methods, parallel, 
          pbapply, stats, statmod
 Suggests: Biobase, BiocManager, BiocSet, edgeR, DESeq2, GEOquery, GSA, knitr, 
