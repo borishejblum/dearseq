@@ -18,37 +18,44 @@ Status](https://img.shields.io/codecov/c/github/borishejblum/dearseq/master.svg)
 `dearseq` is a package for analyzing RNA-seq data. The 2 main functions
 of the package are `dear_seq()` and `dgsa_seq()`:
 
-  - **Gene-wise Differential Analysis of RNA-seq data** can be performed
+-   **Gene-wise Differential Analysis of RNA-seq data** can be performed
     using the function `dear_seq()`.
-  - **Gene Set Analysis of RNA-seq data** can be performed using the
+-   **Gene Set Analysis of RNA-seq data** can be performed using the
     function `dgsa_seq()`.
 
 The methods implemented in this package are detailed in the following
 articles:
 
-> Gauthier M, Agniel D, Thiébaut R & Hejblum BP (2019). dearseq: a
+> Gauthier M, Agniel D, Thiébaut R & Hejblum BP (2020). dearseq: a
 > variance component score test for RNA-Seq differential analysis that
-> effectively controls the false discovery rate, *bioRxiv* 635714.
-> [DOI: 10.1101/635714](https://doi.org/10.1101/635714)
+> effectively controls the false discovery rate, *NAR Genomics and
+> Bioinformatics* **2**(*4*):lqaa093 [DOI:
+> 10.1093/nargab/lqaa093](https://doi.org/10.1101/10.1093/nargab/lqaa093)
+> [bioRxiv:635714](https://www.biorxiv.org/content/10.1101/635714v1)
 
 > Agniel D & Hejblum BP (2017). Variance component score test for
 > time-course gene set analysis of longitudinal RNA-seq data,
 > [*Biostatistics*](https://academic.oup.com/biostatistics/article-abstract/18/4/589/3065599),
-> 18(4):589-604. [arXiv:1605.02351](https://arxiv.org/abs/1605.02351v4)
-> [DOI: 10.1093/biostatistics/kxx005](https://doi.org/10.1093/biostatistics/kxx005)
+> **18**(*4*):589-604.
+> [arXiv:1605.02351](https://arxiv.org/abs/1605.02351v4) [DOI:
+> 10.1093/biostatistics/kxx005](https://doi.org/10.1093/biostatistics/kxx005)
 
 ## Installation
 
 ***`dearseq` is available from
 [Bioconductor](http://www.bioconductor.org)***
 
-Meanwhile, the easiest way to get `dearseq` is to install its
-development version from the `dev` branch on
+``` r
+#install.packages("BiocManager")
+BiocManager::install("dearseq")
+```
+
+The development version of `dearseq` is available on
 [GitHub](https://github.com/borishejblum/dearseq):
 
 ``` r
 #install.packages("BiocManager")
-BiocManager::install("dearseq")
+remotes::install_github("borishejblum/dearseq")
 ```
 
 – Marine Gauthier, Denis Agniel & Boris Hejblum
