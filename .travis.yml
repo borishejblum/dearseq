@@ -44,6 +44,7 @@ bioc_packages:
 - DESeq2
 - edgeR
 - GEOquery
+- SummarizedExperiment
 
 r_github_packages:
 - hadley/ggplot2
