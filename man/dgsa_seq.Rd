@@ -29,6 +29,8 @@ dgsa_seq(
   padjust_methods = c("BH", "BY", "holm", "hochberg", "hommel", "bonferroni"),
   lowess_span = 0.5,
   R = NULL,
+  adaptive = TRUE,
+  max_adaptive = 64000,
   homogen_traj = FALSE,
   na.rm_gsaseq = TRUE,
   verbose = TRUE
@@ -171,6 +173,12 @@ each value. Larger values give more smoothness. Only used if
 
 \item{R}{library size (optional, important to provide if
 \code{preprocessed = TRUE}). Default is \code{NULL}}
+
+\item{adaptive}{a logical flag indicating whether adaptive permutation should 
+be performed. Default is \code{TRUE}}
+
+\item{max_adaptive}{The maximum number of permutations considered.
+Default is \code{64000}}
 
 \item{homogen_traj}{a logical flag indicating whether trajectories should be
 considered homogeneous. Default is \code{FALSE} in which case trajectories are

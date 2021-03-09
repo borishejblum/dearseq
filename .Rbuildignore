@@ -13,3 +13,4 @@ revdep
 GSE107991
 tcgsaseqPaper_ReproducibleFiles
 dearseqPaper_ReproducibleFiles
+checkSPweights.R

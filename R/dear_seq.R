@@ -124,6 +124,12 @@
 #'@param R library.size (optional, important to provide if
 #'\code{preprocessed = TRUE}). Default is \code{NULL}
 #'
+#'@param adaptive a logical flag indicating whether adaptive permutation should 
+#'be performed. Default is \code{TRUE}
+#'
+#'@param max_adaptive The maximum number of permutations considered.
+#'Default is \code{64000}
+#'
 #'@param homogen_traj a logical flag indicating whether trajectories should be
 #'considered homogeneous. Default is \code{FALSE} in which case trajectories
 #'are not only tested for trend, but also for heterogeneity.
@@ -254,6 +260,7 @@ dear_seq <- function(exprmat = NULL, object = NULL,
                                          "hommel", "bonferroni"),
                      lowess_span = 0.5,
                      R=NULL,
+                     adaptive = TRUE, max_adaptive = 64000,
                      homogen_traj = FALSE,
                      na.rm_dearseq = TRUE) {
 
@@ -277,6 +284,7 @@ dear_seq <- function(exprmat = NULL, object = NULL,
                  padjust_methods = padjust_methods,
                  lowess_span = lowess_span,
                  R = R,
+                 adaptive = adaptive, max_adaptive = max_adaptive,
                  homogen_traj = homogen_traj,
                  na.rm_gsaseq = na.rm_dearseq,
                  verbose = FALSE))

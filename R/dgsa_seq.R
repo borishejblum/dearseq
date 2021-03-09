@@ -140,6 +140,12 @@
 #'@param R library size (optional, important to provide if
 #'\code{preprocessed = TRUE}). Default is \code{NULL}
 #'
+#'@param adaptive a logical flag indicating whether adaptive permutation should 
+#'be performed. Default is \code{TRUE}
+#'
+#'@param max_adaptive The maximum number of permutations considered.
+#'Default is \code{64000}
+#'
 #'@param homogen_traj a logical flag indicating whether trajectories should be
 #'considered homogeneous. Default is \code{FALSE} in which case trajectories are
 #'not only tested for trend, but also for heterogeneity.
@@ -270,6 +276,7 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
                                          "hommel", "bonferroni"),
                      lowess_span = 0.5,
                      R=NULL,
+                     adaptive = TRUE, max_adaptive = 64000,
                      homogen_traj = FALSE,
                      na.rm_gsaseq = TRUE,
                      verbose = TRUE) {
@@ -532,6 +539,7 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
                                         parallel_comp = parallel_comp,
                                         nb_cores = nb_cores,
                                         genewise_pvals = TRUE,
+                                        adaptive = adaptive, max_adaptive = max_adaptive,
                                         homogen_traj = homogen_traj,
                                         na.rm = na.rm_gsaseq)
             rawPvals <- perm_result$gene_pvals
@@ -658,6 +666,7 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
                                  parallel_comp = parallel_comp,
                                  nb_cores = nb_cores,
                                  genewise_pvals = FALSE,
+                                 adaptive = adaptive, max_adaptive = max_adaptive,
                                  homogen_traj = homogen_traj,
                                  na.rm = na.rm_gsaseq
                     )$set_pval
@@ -680,7 +689,8 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
     }
     if(is.null(genesets)){
         ans_final <- list(which_test = which_test, preprocessed = preprocessed,
-                          n_perm = n_perm, pvals = pvals, precision_weights = w
+                          n_perm = n_perm, pvals = pvals, precision_weights = w, 
+                          weight_object = w_full
         )
     }else{
         ans_final <- list(which_test = which_test, preprocessed = preprocessed,
@@ -689,10 +699,12 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
                                                      FUN = function(gs){tryCatch(w[gs, , drop = FALSE], 
                                                                                  error=function(cond){return(NA)})
                                                      }
-                          )
+                          ), 
+                          weight_object = w_full
         )
     }
     
+    class(ans_final) <- "dearseq"
     return(ans_final)
     
 }

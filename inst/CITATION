@@ -1,19 +1,16 @@
 citHeader("To cite dearseq in publications, please use:")
 
 citEntry(entry = "Article",
-   title  = "Variance component score test for time-course gene set analysis of longitudinal RNA-seq data",
-   author = c(person("Denis Agniel"), person("Boris P Hejblum")),
-   journal = "Biostatistics",
-   year   = "2017",
-   volume = "18",
+   title  = "dearseq: a variance component score test for RNA-Seq differential analysis that effectively controls the false discovery rate",
+   author = c(person("Marine Gauthier"), person("Denis Agniel"), person("Rodolphe Thiebaut"), person("Boris P Hejblum")),
+   journal = "NAR Genomics and Bioinformatics",
+   year   = "2020",
+   volume = "2",
    number = "4",
-   pages  = "589-604",
-   doi    = "10.1093/biostatistics/kxx005",
-   url    = "https://doi.org/10.1093/biostatistics/kxx005",
-   archivePrefix = "arXiv",
-   eprint        = "1605.02351",
-   note   = "R package version 1.6.2",
-   textVersion = "Agniel D and Hejblum BP (2017) Variance component score test for time-course gene set analysis of longitudinal RNA-seq data. Biostatistics, 18(4):589-604. 10.1093/biostatistics/kxx005. arXiv:1605.02351."
+   pages  = "lqaa093",
+   doi    = "10.1093/nargab/lqaa093",
+   url    = "https://doi.org/10.1093/nargab/lqaa093",
+   textVersion = "Gauthier M, Agniel D, Thiébaut R, Hejblum BP (2020) dearseq: a variance component score test for RNA-Seq differential analysis that effectively controls the false discovery rate. NAR Genomics and Bioinformatics 2(4):lqaa093. DOI: 10.1093/nargab/lqaa093"
 )
 
 citFooter("We have invested a lot of time and effort in implementing dearseq, ", "please cite it when using it for data analysis or research.")

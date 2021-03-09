@@ -43,6 +43,12 @@
 #'should be returned. Default is \code{FALSE} in which case gene-set p-value is
 #'computed and returned instead.
 #'
+#'@param adaptive a logical flag indicating whether adaptive permutation should 
+#'be performed. Default is \code{TRUE}
+#'
+#'@param max_adaptive The maximum number of permutations considered.
+#'Default is \code{64000}
+#'
 #'@param homogen_traj a logical flag indicating whether trajectories should be
 #'considered homogeneous. Default is \code{FALSE} in which case trajectories are
 #'not only tested for trend, but also for heterogeneity.
@@ -107,7 +113,8 @@ vc_test_perm <- function(y, x, indiv = rep(1, nrow(x)), phi, w,
                          n_perm = 1000, progressbar = TRUE,
                          parallel_comp = TRUE,
                          nb_cores = parallel::detectCores() - 1,
-                         genewise_pvals = FALSE,
+                         genewise_pvals = FALSE, 
+                         adaptive = TRUE, max_adaptive = 64000,
                          homogen_traj = FALSE, na.rm = FALSE) {
 
     n_samples <- ncol(y)
@@ -132,32 +139,65 @@ vc_test_perm <- function(y, x, indiv = rep(1, nrow(x)), phi, w,
         #)
     }
 
-
+    if(adaptive){
+        message(paste("Performing", n_perm, "initial permutations for", nrow(y),  "genes"))
+    }
     score_list_res <- vc_score_2use(y = y, x = x, indiv = indiv_fact, phi = phi,
                                     w = w, Sigma_xi = Sigma_xi, na_rm = na.rm,
                                     n_perm = n_perm,
                                     progressbar = progressbar,
                                     parallel_comp = parallel_comp,
                                     nb_cores = nb_cores)
-
+    
     if (genewise_pvals) {
         gene_scores_obs <- score_list_res$gene_scores_unscaled
         gene_scores_perm <- score_list_res$gene_scores_unscaled_perm
-
+        
         nperm_sup_obs <- rowSums(gene_scores_perm >= gene_scores_obs)
         #pvals_naive <- nperm_sup_obs/n_perm
         #pvals_u <- (nperm_sup_obs + 1)/(n_perm +1)
         pvals_e <- perm_pe(nperm_sup_obs, nperm_eff = n_perm,
                            total_possible_nperm = N_possible_perms)
+        ind_threshold <- which(nperm_sup_obs<1)
+        #ind_threshold <- as.numeric(which(pvals_e<=2/(n_perm/10)))
+        n_perm_threshold <- n_perm
+        gene_scores_perm_threshold <- gene_scores_perm
+        nperm_sup_obs_threshold <- nperm_sup_obs
+        
+        if(adaptive && (min(pvals_e)!=(0.05/length(pvals_e))) && 
+           (length(ind_threshold)>1) && (n_perm_threshold <= max_adaptive)){
+            message("Adaptive permutation strategy:")
+        }
+        
+        while(adaptive && (min(pvals_e)!=(0.05/length(pvals_e))) && 
+              (length(ind_threshold)>1) && (n_perm_threshold <= max_adaptive)){
+            message(paste("  performing", n_perm_threshold, "additional permutations for", length(ind_threshold),  "genes"))
+            score_list_res <- vc_score_2use(y = y[ind_threshold,], x = x, indiv = indiv_fact, phi = phi,
+                                            w = w[ind_threshold,], Sigma_xi = Sigma_xi, na_rm = na.rm,
+                                            n_perm = n_perm_threshold,
+                                            progressbar = progressbar,
+                                            parallel_comp = parallel_comp,
+                                            nb_cores = nb_cores)
+            
+            gene_scores_perm_threshold <- cbind(gene_scores_perm_threshold[which(nperm_sup_obs_threshold<1),],score_list_res$gene_scores_unscaled_perm)
+            nperm_sup_obs_threshold <- rowSums(gene_scores_perm_threshold >= gene_scores_obs[ind_threshold])
+            pvals_e_threshold <- perm_pe(nperm_sup_obs_threshold, nperm_eff = n_perm_threshold*2,
+                                         total_possible_nperm = N_possible_perms)
+            
+            pvals_e[ind_threshold] <- pvals_e_threshold
+            ind_threshold <- ind_threshold[which(nperm_sup_obs_threshold<1)]
+            n_perm_threshold <- n_perm_threshold*2
+            
+        }
         names(pvals_e) <- names(gene_scores_obs)
-
+        
         ans <- list(gene_scores_obs = gene_scores_obs, gene_pvals = pvals_e)
     } else {
         pvals_u <- (sum(score_list_res$scores_perm >=
                             score_list_res$score) + 1)/(n_perm + 1)
-
+        
         ans <- list(set_score_obs = score_list_res$score, set_pval = pvals_u)
-
+        
     }
     return(ans)
 }

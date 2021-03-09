@@ -16,6 +16,8 @@ vc_test_perm(
   parallel_comp = TRUE,
   nb_cores = parallel::detectCores() - 1,
   genewise_pvals = FALSE,
+  adaptive = TRUE,
+  max_adaptive = 64000,
   homogen_traj = FALSE,
   na.rm = FALSE
 )
@@ -57,6 +59,12 @@ Default is \code{parallel::detectCores() - 1}.}
 \item{genewise_pvals}{a logical flag indicating whether gene-wise p-values
 should be returned. Default is \code{FALSE} in which case gene-set p-value is
 computed and returned instead.}
+
+\item{adaptive}{a logical flag indicating whether adaptive permutation should 
+be performed. Default is \code{TRUE}}
+
+\item{max_adaptive}{The maximum number of permutations considered.
+Default is \code{64000}}
 
 \item{homogen_traj}{a logical flag indicating whether trajectories should be
 considered homogeneous. Default is \code{FALSE} in which case trajectories are
