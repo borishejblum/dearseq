@@ -1,6 +1,6 @@
 #'Summary method for dearseq objects 
 #'
-#'@param x an object of class \code{dear_seq}
+#'@param object an object of class \code{dear_seq}
 #'
 #'@param signif_threshold a value between \code{0} and {1} specifying the 
 #'nominal significance threshold. Default is \code{0.05}.
@@ -16,8 +16,9 @@
 
 summary.dearseq <- function(object, signif_threshold = 0.05, ...){
   adj_pval <- object$pvals$adjPval
-  adj_pval <- sort(adj_pval)
   names(adj_pval) <- rownames(object$pvals)
+  
+  adj_pval <- sort(adj_pval)
   
   s <- list()
   s$which_test <- object$which_test

@@ -10,6 +10,8 @@
 \method{print}{summary.dearseq}(x, ...)
 }
 \arguments{
+\item{object}{an object of class \code{dear_seq}}
+
 \item{signif_threshold}{a value between \code{0} and {1} specifying the 
 nominal significance threshold. Default is \code{0.05}.}
 
