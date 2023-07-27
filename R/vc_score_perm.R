@@ -242,12 +242,12 @@ vc_score_perm <- function(y, x, indiv, phi, w, Sigma_xi = diag(ncol(phi)),
         pboptions(opb)
     }
 
-
+    gene_Q
     rownames(gene_Q) <- colnames(yt_mu)
     QQ <- colSums(gene_Q)
 
 
     return(list(score = QQ[1], scores_perm = QQ[-1],
                 gene_scores_unscaled = gene_Q[, 1],
-                gene_scores_unscaled_perm = gene_Q[, -1]))
+                gene_scores_unscaled_perm = gene_Q[, -1]) )
 }
