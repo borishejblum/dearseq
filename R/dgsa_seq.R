@@ -605,7 +605,9 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
       prop_meas <- vapply(genesets, function(x) {
         length(intersect(x, gene_names_measured))/length(x)
       }, FUN.VALUE = 1)
-      if (sum(prop_meas) != length(prop_meas)) {
+      print("check bug")
+      print(unname(prop_meas))
+      if (sum(unname(prop_meas),na.rm = TRUE) != length(prop_meas)) {
         warning("Some transcripts in the investigated gene sets were ",
                 "not measured:\nremoving those transcripts from the ",
                 "gene set definition...")
@@ -667,7 +669,7 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
           if(verbose){
             message("Analyzing gene set ", i_gs)
           }
-          vc_test_perm(y = y_lcpm[gs, , drop = FALSE], x = x,
+          print(vc_test_perm(y = y_lcpm[gs, , drop = FALSE], x = x,
                        indiv = sample_group,
                        phi = phi, w = w[gs, , drop = FALSE],
                        Sigma_xi = cov_variables2test_eff,
@@ -680,9 +682,10 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
                        max_adaptive = max_adaptive,
                        homogen_traj = homogen_traj,
                        na.rm = na.rm_gsaseq
-          )$set_pval
+          )$set_pval)
         }
       }, FUN.VALUE = 0.5)
+      
     }
 
     if(!is.na(padjust_methods)){

@@ -241,10 +241,16 @@ vc_score_perm <- function(y, x, indiv, phi, w, Sigma_xi = diag(ncol(phi)),
     if(!progressbar){
         pboptions(opb)
     }
-
-    gene_Q
-    rownames(gene_Q) <- colnames(yt_mu)
-    QQ <- colSums(gene_Q)
+    
+    if(length(colnames(yt_mu))==1){
+      gene_Q = matrix(gene_Q, nrow = 1)
+      rownames(gene_Q) <- colnames(yt_mu)
+      QQ <- colSums(gene_Q)
+    }else{
+      rownames(gene_Q) <- colnames(yt_mu)
+      QQ <- colSums(gene_Q)
+    }
+    
 
 
     return(list(score = QQ[1], scores_perm = QQ[-1],

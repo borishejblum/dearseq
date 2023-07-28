@@ -38,7 +38,7 @@
 
 plot_ord_pvals <- function(pvals, signif_threshold = 0.05){
   
-  df_plot <- data.frame("y" = sort(pvals), "x" = seq_len(length(pvals)))
+  df_plot <- data.frame("y" = sort(pvals), "x" = seq_len(length(pvals[!is.na(pvals)])))
   
   t <- seq_len(nrow(df_plot))
   s <- (t/length(pvals))*signif_threshold

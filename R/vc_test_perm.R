@@ -200,12 +200,14 @@ vc_test_perm <- function(y, x, indiv = rep(1, nrow(x)), phi, w,
                 ind_threshold <- NULL
                 n_perm_threshold <- max_adaptive + 1
             }
-
+            
         }
+        
         names(pvals_e) <- names(gene_scores_obs)
 
         ans <- list(gene_scores_obs = gene_scores_obs, gene_pvals = pvals_e)
     } else {
+      
         pvals_u <- (sum(score_list_res$scores_perm >=
                             score_list_res$score) + 1)/(n_perm + 1)
 
