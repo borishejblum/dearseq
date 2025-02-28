@@ -68,15 +68,15 @@ printed during the computation. Default is \code{TRUE}.}
 }
 \value{
 a list containing the following components:\itemize{
-\item \code{weights}: a matrix \code{n x G} containing the computed precision 
-weights 
+\item \code{weights}: a matrix \code{n x G} containing the computed precision
+weights
 \item \code{plot_utilities}: a list containing the following elements:\itemize{
-     \item\code{reverse_trans}: a function encoding the reverse function used 
+     \item\code{reverse_trans}: a function encoding the reverse function used
      for smoothing the observations before computing the weights
      \item\code{method}: the weight computation method (\code{"loclin"})
-     \item\code{smth}: the vector of the smoothed values computed 
-     \item\code{gene_based}: a logical indicating whether the computed 
-     weights are based on average at the gene level or on individual 
+     \item\code{smth}: the vector of the smoothed values computed
+     \item\code{gene_based}: a logical indicating whether the computed
+     weights are based on average at the gene level or on individual
      observations
      \item\code{mu}: the transformed observed counts or averages
      \item\code{v}: the observed variability estimates

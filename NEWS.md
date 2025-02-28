@@ -1,6 +1,6 @@
 CHANGES IN VERSION 1.13.4 (2023-09-06):
 --------------------------------------
- + better handlingof non-tested genes
+ + better handling of non-tested genes
  
 
 CHANGES IN VERSION 1.13.3 (2023-06-16):

@@ -50,15 +50,15 @@
 #'\code{NaN}) be omitted from the calculations? Default is \code{FALSE}.
 #'
 #'@return a list containing the following components:\itemize{
-#'\item \code{weights}: a matrix \code{n x G} containing the computed precision 
-#'weights 
+#'\item \code{weights}: a matrix \code{n x G} containing the computed precision
+#'weights
 #'\item \code{plot_utilities}: a list containing the following elements:\itemize{
-#'      \item\code{reverse_trans}: a function encoding the reverse function used 
+#'      \item\code{reverse_trans}: a function encoding the reverse function used
 #'      for smoothing the observations before computing the weights
 #'      \item\code{method}: the weight computation method (\code{"loclin"})
-#'      \item\code{smth}: the vector of the smoothed values computed 
-#'      \item\code{gene_based}: a logical indicating whether the computed 
-#'      weights are based on average at the gene level or on individual 
+#'      \item\code{smth}: the vector of the smoothed values computed
+#'      \item\code{gene_based}: a logical indicating whether the computed
+#'      weights are based on average at the gene level or on individual
 #'      observations
 #'      \item\code{mu}: the transformed observed counts or averages
 #'      \item\code{v}: the observed variability estimates
@@ -96,14 +96,14 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
                                   "optcosine"),
                        transform = TRUE, verbose = TRUE,
                        na.rm = FALSE) {
-  
-  
+
+
   ## dimensions & validity checks
-  
+
   stopifnot(is.matrix(y))
   stopifnot(is.matrix(x))
   stopifnot(is.null(phi) | is.matrix(phi))
-  
+
   g <- nrow(y)  # the number of genes measured
   n <- ncol(y)  # the number of samples measured
   qq <- ncol(x)  # the number of covariates
@@ -111,7 +111,7 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
   if(use_phi){
     stopifnot(nrow(phi) == n)
   }
-  
+
   # removing genes never observed:
   observed <- which(rowSums(y, na.rm = TRUE) != 0)
   nb_g_sum0 <- length(observed) - g
@@ -119,7 +119,7 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
     warning(nb_g_sum0, " y rows sum to 0 (i.e. are never observed)",
             "and have been removed")
   }
-  
+
   kernel <- match.arg(kernel)
   if (preprocessed) {
     y_lcpm <- t(y[observed, ])
@@ -131,8 +131,8 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
   }
   N <- length(y_lcpm)
   p <- ncol(y_lcpm)
-  
-  
+
+
   # fitting OLS to the lcpm
   xphi <- if (use_phi) {
     cbind(x, phi)
@@ -147,12 +147,12 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
     B_ols <- solve(crossprod(xphi)) %*% t(xphi) %*% y_lcpm
   }
   mu <- xphi %*% B_ols
-  
+
   sq_err <- (y_lcpm - mu)^2
   lse <- log(sq_err)
   v <- colMeans(sq_err, na.rm = na.rm)
   mu_avg <- colMeans(mu, na.rm = na.rm)
-  
+
   if (gene_based) {
     mu_x <- mu_avg
   } else {
@@ -170,7 +170,7 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
   } else {
     reverse_trans <- identity
   }
-  
+
   if (is.character(bw)) {
     if (length(bw > 1)) {
       bw <- bw[1]
@@ -178,7 +178,7 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
     if (N < 2) {
       stop("need at least 2 points to select a bandwidth automatically")
     }
-    
+
     # remove NA to compute the bandwith
     if(sum(is.na(mu_x))>0 & na.rm){
       mu_x_nona <- na.omit(mu_x)
@@ -195,19 +195,19 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
                       "must be among 'nrd0', 'nrd', 'ucv',",
                       "'bcv', 'SJ'")
     )
-    
+
     if (verbose) {
       message("\nBandwith computed.\n")
     }
   }
-  
+
   if (!is.finite(bw)) {
     stop("non-finite 'bw'")
   }
   if (bw <= 0) {
     stop("'bw' is not positive")
   }
-  
+
   # choose kernel ----
   if (kernel == "gaussian") {
     kern_func <- function(x, bw) {
@@ -217,7 +217,7 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
     kern_func2 <- function(x, bw) {
       a <- bw * sqrt(3)
       (abs(x) < a) * 0.5/a  #ifelse(abs(x) < a, 0.5/a, 0)
-      
+
     }
   } else if (kernel == "triangular") {
     kern_func <- function(x, bw) {
@@ -258,9 +258,9 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
          "'gaussian', 'rectangular', 'triangular', 'epanechnikov',",
          "'biweight', 'cosine', 'optcosine'")
   }
-  
+
   if (gene_based) {
-    
+
     w <- function(x) {
       x_ctr <- (mu_x - x)
       kernx <- kern_func(x_ctr, bw)
@@ -270,32 +270,32 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
       l <- b/sum(b)
       sum(l * v)
     }
-    
-    
+
+
     kern_fit <- vapply(mu_x, w, FUN.VALUE = 1.1)
     weights <- 1/matrix(kern_fit, nrow = n, ncol = p, byrow = TRUE)
     if (sum(!is.finite(weights)) > 0) {
       warning("At least 1 non finite weight. ",
               "Try to increase the bandwith")
     }
-    
+
   } else {
-    
+
     mu_x_fit <- mu_x
     lse_fit <- lse
-    
+
     na_mux <- which(is.na(mu_x))
     if (!na.rm) {
       stop("Cannot compute the weights without ignoring NA/NaN ",
            "values...\nTry setting 'na.rm' or na.rm_gsaseq' to 'TRUE' ",
            "to ignore NA/NaN values, but think carefully about where ",
            "does those NA/NaN come from...")
-      
+
     } else if (length(na_mux) > 0) {
       mu_x_fit <- mu_x_fit[-na_mux]
       lse_fit <- lse_fit[-na_mux]
     }
-    
+
     inf_lse <- which(is.infinite(lse_fit))
     if(length(inf_lse) > 0){
       mu_x_fit <- mu_x_fit[-inf_lse]
@@ -314,7 +314,7 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
       bw <- 2*bw
       min_gridsize <- ceiling((max(mu_x_fit) - min(mu_x_fit))/(4*bw))+1
       gridsize <- max(min_gridsize, 401)
-      smth <- KernSmooth::locpoly(x = c(mu_x_fit), y = c(lse_fit), degree = 2,
+      smth <- KernSmooth::locpoly(x = c(mu_x_fit), y = c(lse_fit), drv = 1,
                                   kernel = kernel, bandwidth = bw, gridsize = gridsize)
       w <- exp(-stats::approx(x = reverse_trans(smth$x), y = smth$y,
                               xout = reverse_trans(mu_x),
@@ -336,12 +336,12 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
     }else{
       stop("NA variance weights estimated while `na.rm`is FALSE")
     }
-    
+
   }
   colnames(weights) <- colnames(y_lcpm)
   rownames(weights) <- rownames(y_lcpm)
-  
-  
+
+
   if(gene_based){
     v_out <- v
     smth_out <- kern_fit
@@ -349,8 +349,8 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
     v_out <- lse
     smth_out <- smth
   }
-  
-  return(list("weights" = t(weights), 
+
+  return(list("weights" = t(weights),
               "plot_utilities" = list("reverse_trans" = reverse_trans,
                                       "method" = "loclin",
                                       "smth" = smth_out,
