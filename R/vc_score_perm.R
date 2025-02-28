@@ -209,10 +209,7 @@ vc_score_perm <- function(y, x, indiv, phi, w, Sigma_xi = diag(ncol(phi)),
 
     o <- order(as.numeric(unlist(split(x = as.character(seq_len(n)),
                                        f = indiv))))
-    perm_list <- c(list(seq_len(n)), lapply(seq_len(n_perm), function(x){
-        as.numeric(unlist(lapply(split(x = as.character(seq_len(n)), f = indiv),
-                                 FUN=sample)))[o]}))
-
+    perm_list <- perm_list_cpp(as.numeric(indiv), nb_indiv, n, n_perm, o)
 
     if(!progressbar){
         opb <- getOption("pboptions")

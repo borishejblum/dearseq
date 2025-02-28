@@ -29,4 +29,8 @@
 #'\href{https://doi.org/10.1093/nargab/lqaa093}{DOI: 10.1093/nargab/lqaa093}.
 #'\href{https://www.biorxiv.org/content/10.1101/635714}{DOI: 10.1101/635714}
 #'
+## usethis namespace: start
+#' @importFrom Rcpp sourceCpp
+#' @useDynLib dearseq, .registration = TRUE
+## usethis namespace: end
 "_PACKAGE"

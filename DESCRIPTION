@@ -16,9 +16,26 @@ Authors@R: c(person("Denis", "Agniel", role = c("aut"),
 	           person("Iban", "Larrouture", role = c("ctb"),
 	                  email = "iban.larrouture@u-bordeaux.fr"))
 Depends: R (>= 3.6.0)
-Imports: CompQuadForm, dplyr, ggplot2, KernSmooth, magrittr, matrixStats, methods, 
-         patchwork, parallel, pbapply, reshape2, rlang, scattermore, stats, 
-         statmod, survey, tibble, viridisLite
+Imports: 
+    CompQuadForm,
+    dplyr,
+    ggplot2,
+    KernSmooth,
+    magrittr,
+    matrixStats,
+    methods,
+    patchwork,
+    parallel,
+    pbapply,
+    reshape2,
+    rlang,
+    scattermore,
+    stats,
+    statmod,
+    survey,
+    tibble,
+    viridisLite,
+    Rcpp
 Suggests: Biobase, BiocManager, BiocSet, edgeR, DESeq2, GEOquery, GSA, knitr, 
           limma, readxl, rmarkdown, S4Vectors, SummarizedExperiment, testthat, covr
 Description: Differential Expression Analysis RNA-seq data with variance 
@@ -39,5 +56,7 @@ biocViews: BiomedicalInformatics, CellBiology, DifferentialExpression, DNASeq,
         Transcriptomics
 BugReports: https://github.com/borishejblum/dearseq/issues
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
+LinkingTo: 
+    Rcpp
