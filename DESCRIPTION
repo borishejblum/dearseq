@@ -2,8 +2,8 @@ Package: dearseq
 Type: Package
 Title: Differential Expression Analysis for RNA-seq data through a robust 
        variance component test
-Version: 1.13.4
-Date: 2023-09-06
+Version: 1.13.5
+Date: 2025-02-28
 Authors@R: c(person("Denis", "Agniel", role = c("aut"),
                     email = "denis.agniel@gmail.com"),
 	           person("Boris P.", "Hejblum", role = c("aut", "cre"),
@@ -54,6 +54,7 @@ biocViews: BiomedicalInformatics, CellBiology, DifferentialExpression, DNASeq,
         GeneExpression, Genetics, GeneSetEnrichment, ImmunoOncology, KEGG,
         Regression, RNASeq, Sequencing, SystemsBiology, TimeCourse, Transcription, 
         Transcriptomics
+URL: https://borishejblum.github.io/dearseq, https://bioconductor.org/packages/dearseq/
 BugReports: https://github.com/borishejblum/dearseq/issues
 Encoding: UTF-8
 RoxygenNote: 7.3.2

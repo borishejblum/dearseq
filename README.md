@@ -34,9 +34,8 @@ articles:
 > 10.1093/nargab/lqaa093](https://doi.org/10.1093/nargab/lqaa093)
 > [bioRxiv:635714](https://www.biorxiv.org/content/10.1101/635714v1)
 
-🌐 Reproducible code files for the results presented in Gauthier *et
-al.* (2020) can be dowloaded here:  
-[👉 *NAR G&B* reproducible code
+♻️ Reproducible code files for the results presented in Gauthier *et
+al.* (2020) can be dowloaded [here: 👉 🌐 *NAR G&B* reproducible code
 files](https://github.com/borishejblum/dearseq/releases/download/v1.7.2/NARGAB_ReproducibleCodeFiles.zip)
 
 > Agniel D & Hejblum BP (2017). Variance component score test for
@@ -45,6 +44,9 @@ files](https://github.com/borishejblum/dearseq/releases/download/v1.7.2/NARGAB_R
 > **18**(*4*):589-604.
 > [arXiv:1605.02351](https://arxiv.org/abs/1605.02351v4) [DOI:
 > 10.1093/biostatistics/kxx005](https://doi.org/10.1093/biostatistics/kxx005)
+
+More information about `dearseq` can be found [here: 👉 🌐 pkgdown
+website](https://borishejblum.github.io/dearseq/)
 
 ## Installation
 

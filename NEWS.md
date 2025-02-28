@@ -1,3 +1,10 @@
+CHANGES IN VERSION 1.13.5 (2025-02-28):
+--------------------------------------
+ + added C++ code to speed-up computational bottlenecks in permutation tests creating a new deêndence on `Rcpp`
+ + added a `pkgdown` companion website at https://borishejblum.github.io/dearseq
+ + fixing vignette last plot
+ 
+
 CHANGES IN VERSION 1.13.4 (2023-09-06):
 --------------------------------------
  + better handling of non-tested genes
