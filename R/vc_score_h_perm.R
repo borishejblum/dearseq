@@ -221,9 +221,7 @@ vc_score_h_perm <- function(y, x, indiv, phi, w,
     compute_genewise_scores <- function(v, indiv_mat, avg_xtx_inv_tx) {
         phi_perm <- phi[v, , drop = FALSE]
         phi_sig_xi_sqrt <- phi_perm %*% sig_xi_sqrt
-        T_fast <- do.call(cbind, replicate(K, sig_eps_inv_T,
-                                           simplify = FALSE)) *
-            matrix(apply(phi_sig_xi_sqrt, 2, rep, g), ncol = g * K)
+        T_fast <- compute_T_cpp(sig_eps_inv_T, phi_sig_xi_sqrt)
         q_fast <- matrix(yt_mu, ncol = g * n_t, nrow = n) * T_fast
         if (na_rm & sum(is.na(q_fast)) > 0) {
             q_fast[is.na(q_fast)] <- 0
@@ -241,10 +239,9 @@ vc_score_h_perm <- function(y, x, indiv, phi, w,
         return(rowSums(matrix(qq, ncol = K)))  # genewise scores
     }
 
-    perm_list <- c(list(seq_len(n)), lapply(seq_len(n_perm), function(x) {
-        as.numeric(unlist(lapply(split(x = as.character(seq_len(n)), f = indiv),
-                                 FUN = sample)))
-    }))
+    o <- order(as.numeric(unlist(split(x = as.character(seq_len(n)),
+                                       f = indiv))))
+    perm_list <- perm_list_cpp(as.numeric(indiv), nb_indiv, n, n_perm, o)
 
     if(!parallel_comp){
         if(progressbar){

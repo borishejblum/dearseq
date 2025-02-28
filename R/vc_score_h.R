@@ -1,6 +1,6 @@
 #'Computes variance component score test statistic for homogeneous trajectories
 #'
-#'This function computes the variance component score test statistics for 
+#'This function computes the variance component score test statistics for
 #'homogeneous trajectories
 #'
 #'@keywords internal
@@ -185,8 +185,7 @@ vc_score_h <- function(y, x, indiv, phi, w, Sigma_xi = diag(ncol(phi)),
 
     sig_eps_inv_T <- t(w)
     phi_sig_xi_sqrt <- phi %*% sig_xi_sqrt
-    T_fast <- do.call(cbind, replicate(K, sig_eps_inv_T, simplify = FALSE)) *
-        matrix(apply(phi_sig_xi_sqrt, 2, rep, g), ncol = g * K)
+    T_fast <- compute_T_cpp(sig_eps_inv_T, phi_sig_xi_sqrt)
     q_fast <- do.call(cbind, replicate(K, yt_mu, simplify = FALSE)) * T_fast
 
     if (length(levels(indiv)) > 1) {

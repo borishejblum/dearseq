@@ -155,8 +155,7 @@ vc_score <- function(y, x, indiv, phi, w, Sigma_xi = diag(ncol(phi)),
     sig_eps_inv_T <- t(w)
     phi_sig_xi_sqrt <- phi %*% sig_xi_sqrt
 
-    T_fast <- do.call(cbind, replicate(K, sig_eps_inv_T, simplify = FALSE)) *
-        matrix(apply(phi_sig_xi_sqrt, 2, rep, g), ncol = g * K)
+    T_fast <- compute_T_cpp(sig_eps_inv_T, phi_sig_xi_sqrt)
     ##---------------------
     ## the structure of T_fast is time_basis_1*gene_1, time_basis_1*gene_2, ...,
     ## time_basis_1*gene_p, ..., time_basis_K*gene_1, ..., time_basis_K*gene_p
