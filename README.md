@@ -14,6 +14,10 @@ coverage](https://codecov.io/gh/borishejblum/dearseq/branch/master/graph/badge.s
 [![Download](http://www.bioconductor.org/shields/downloads/release/dearseq.svg)](https://bioconductor.org/packages/stats/bioc/dearseq)
 <!-- [![Downloads](https://cranlogs.r-pkg.org/badges/dearseq?color=blue)](https://www.r-pkg.org/pkg/dearseq) -->
 
+**Authors:** [Boris Hejblum](https://borishejblum.science), Denis
+Agniel, Marine Gauthier, Mélanie Huchon, Iban Larrouture<br/>
+**License:** [GNU GPL-2](https://opensource.org/licenses/gpl-2-0)
+
 ## Overview
 
 `dearseq` is a package for analyzing RNA-seq data. The 2 main functions

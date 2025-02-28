@@ -1,6 +1,5 @@
 url: https://borishejblum.github.io/dearseq/
 template:
-  light-switch: true
   bootstrap: 5
   bslib:
     bootswatch: pulse
