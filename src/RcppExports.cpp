@@ -10,6 +10,18 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// compute_T_cpp
+NumericMatrix compute_T_cpp(const NumericMatrix& sig_eps_inv_T, const NumericMatrix& phi_sig_xi_sqrt);
+RcppExport SEXP _dearseq_compute_T_cpp(SEXP sig_eps_inv_TSEXP, SEXP phi_sig_xi_sqrtSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type sig_eps_inv_T(sig_eps_inv_TSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type phi_sig_xi_sqrt(phi_sig_xi_sqrtSEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_T_cpp(sig_eps_inv_T, phi_sig_xi_sqrt));
+    return rcpp_result_gen;
+END_RCPP
+}
 // perm_list_cpp
 Rcpp::List perm_list_cpp(const Rcpp::IntegerVector& indiv, const int nb_indiv, const int n, const int n_perm, const Rcpp::IntegerVector& o);
 RcppExport SEXP _dearseq_perm_list_cpp(SEXP indivSEXP, SEXP nb_indivSEXP, SEXP nSEXP, SEXP n_permSEXP, SEXP oSEXP) {
@@ -27,6 +39,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_dearseq_compute_T_cpp", (DL_FUNC) &_dearseq_compute_T_cpp, 2},
     {"_dearseq_perm_list_cpp", (DL_FUNC) &_dearseq_perm_list_cpp, 5},
     {NULL, NULL, 0}
 };
