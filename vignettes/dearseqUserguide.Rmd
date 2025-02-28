@@ -261,10 +261,12 @@ colData(se2)[["Indiv"]] <- colData(se2)[["Population"]]:colData(se2)[["Replicate
 colData(se2)[["Vern"]] <- ifelse(colData(se2)[["Vernalized"]], "Vernalized", "Non-vernalized")
 
 library(ggplot2)
+library(patchwork)
 spaghettiPlot1GS(gs_index = 3, gmt = baduel_gmt, expr_mat = assay(se2), 
   design = colData(se2), var_time = AgeWeeks, var_indiv = Indiv, 
-  sampleIdColname = "sample", var_group=Vern, var_subgroup=Population, loess_span = 1.5) +
-  ggplot2::xlab("Age (weeks)")
+  sampleIdColname = "sample", var_group=Vern, var_subgroup=Population, loess_span = 1.5) &
+  ggplot2::xlab("Age (weeks)") & #changing the label of the x axis
+  guides(color= "none") # removing the color legend for genes because there are too many
 ```
 
 

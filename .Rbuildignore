@@ -15,3 +15,6 @@ tcgsaseqPaper_ReproducibleFiles
 dearseqPaper_ReproducibleFiles
 checkSPweights.R
 ^\.github$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
