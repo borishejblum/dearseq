@@ -6,24 +6,24 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Differential Expression Analysis for RNA-seq data through a robust variance component test • dearseq</title>
-<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Differential Expression Analysis for RNA-seq data through a robust variance component test">
 <meta name="description" content="Differential Expression Analysis RNA-seq data with variance component score test accounting for data heteroscedasticity through precision weights. Perform both gene-wise and gene set analyses, and can deal with repeated or longitudinal data. Methods are detailed in: i) Agniel D &amp; Hejblum BP (2017) Variance component score test for time-course gene set analysis of longitudinal RNA-seq data, Biostatistics, 18(4):589-604 ; and ii) Gauthier M, Agniel D, Thiébaut R &amp; Hejblum BP (2020) dearseq: a variance component score test for RNA-Seq differential analysis that effectively controls the false discovery rate, NAR Genomics and Bioinformatics, 2(4):lqaa093.">
 <meta property="og:description" content="Differential Expression Analysis RNA-seq data with variance component score test accounting for data heteroscedasticity through precision weights. Perform both gene-wise and gene set analyses, and can deal with repeated or longitudinal data. Methods are detailed in: i) Agniel D &amp; Hejblum BP (2017) Variance component score test for time-course gene set analysis of longitudinal RNA-seq data, Biostatistics, 18(4):589-604 ; and ii) Gauthier M, Agniel D, Thiébaut R &amp; Hejblum BP (2020) dearseq: a variance component score test for RNA-Seq differential analysis that effectively controls the false discovery rate, NAR Genomics and Bioinformatics, 2(4):lqaa093.">
-<meta property="og:image" content="/logo.svg">
+<meta property="og:image" content="https://borishejblum.github.io/dearseq/logo.svg">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="index.html">dearseq</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,14 @@
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/borishejblum/dearseq/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
+<li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="dark"><span class="fa fa-moon"></span> Dark</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
+  </ul>
+</li>
       </ul>
 </div>
 
@@ -75,10 +83,11 @@
 <blockquote>
 <p>Gauthier M, Agniel D, Thiébaut R &amp; Hejblum BP (2020). dearseq: a variance component score test for RNA-Seq differential analysis that effectively controls the false discovery rate, <em>NAR Genomics and Bioinformatics</em> <strong>2</strong>(<em>4</em>):lqaa093 <a href="https://doi.org/10.1093/nargab/lqaa093" class="external-link">DOI: 10.1093/nargab/lqaa093</a> <a href="https://www.biorxiv.org/content/10.1101/635714v1" class="external-link">bioRxiv:635714</a></p>
 </blockquote>
-<p>🌐 Reproducible code files for the results presented in Gauthier <em>et al.</em> (2020) can be dowloaded here:<br><a href="https://github.com/borishejblum/dearseq/releases/download/v1.7.2/NARGAB_ReproducibleCodeFiles.zip" class="external-link">👉 <em>NAR G&amp;B</em> reproducible code files</a></p>
+<p>♻️ Reproducible code files for the results presented in Gauthier <em>et al.</em> (2020) can be dowloaded <a href="https://github.com/borishejblum/dearseq/releases/download/v1.7.2/NARGAB_ReproducibleCodeFiles.zip" class="external-link">here: 👉 🌐 <em>NAR G&amp;B</em> reproducible code files</a></p>
 <blockquote>
 <p>Agniel D &amp; Hejblum BP (2017). Variance component score test for time-course gene set analysis of longitudinal RNA-seq data, <a href="https://academic.oup.com/biostatistics/article-abstract/18/4/589/3065599" class="external-link"><em>Biostatistics</em></a>, <strong>18</strong>(<em>4</em>):589-604. <a href="https://arxiv.org/abs/1605.02351v4" class="external-link">arXiv:1605.02351</a> <a href="https://doi.org/10.1093/biostatistics/kxx005" class="external-link">DOI: 10.1093/biostatistics/kxx005</a></p>
 </blockquote>
+<p>More information about <code>dearseq</code> can be found <a href="https://borishejblum.github.io/dearseq/">here: 👉 🌐 pkgdown website</a></p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
