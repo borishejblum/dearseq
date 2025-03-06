@@ -174,7 +174,7 @@ jobs:
           gha_repos <- if(
               .Platform$OS.type == "unix" && Sys.info()["sysname"] != "Darwin"
           ) c(
-              "AnVIL" = "https://bioconductordocker.blob.core.windows.net/packages/3.16/bioc",
+              "AnVIL" = "https://bioconductordocker.blob.core.windows.net/packages/3.20/bioc",
               BiocManager::repositories()
               ) else BiocManager::repositories()
 
@@ -201,6 +201,12 @@ jobs:
           }
           message(paste('****', Sys.time(), 'pass number 2 at installing dependencies: any remaining dependencies ****'))
           remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = FALSE, upgrade = TRUE)
+        shell: Rscript {0}
+
+      - name: Install Biobase
+        run: |
+          ## Install Biobase
+          BiocManager::install("Biobase")
         shell: Rscript {0}
 
       - name: Install BiocGenerics
