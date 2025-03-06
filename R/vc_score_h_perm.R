@@ -218,24 +218,15 @@ vc_score_h_perm <- function(y, x, indiv, phi, w,
     }
     avg_xtx_inv_tx <- nb_indiv * tcrossprod(solve(crossprod(x, x)), x)
 
-    compute_genewise_scores <- function(v, indiv_mat, avg_xtx_inv_tx) {
+    compute_genewise_scores <- function(v, indiv_mat_rs, avg_xtx_inv_tx, yt_mu_reshaped) {
         phi_perm <- phi[v, , drop = FALSE]
         phi_sig_xi_sqrt <- phi_perm %*% sig_xi_sqrt
         T_fast <- compute_T_cpp(sig_eps_inv_T, phi_sig_xi_sqrt)
-        q_fast <- matrix(yt_mu, ncol = g * n_t, nrow = n) * T_fast
+        q_fast <- yt_mu_reshaped * T_fast
         if (na_rm && anyNA(q_fast)) {
             q_fast[is.na(q_fast)] <- 0
         }
-        q <- crossprod(indiv_mat, q_fast)
-        XT_fast <- t(x) %*% T_fast/nb_indiv
-        U_XT <- matrix(yt_mu, ncol = g * n_t, nrow = n) *
-            crossprod(avg_xtx_inv_tx, XT_fast)
-        if (na_rm && anyNA(U_XT)) {
-            U_XT[is.na(U_XT)] <- 0
-        }
-        U_XT_indiv <- crossprod(indiv_mat, U_XT)
-        q_ext <- q - U_XT_indiv
-        qq <- colSums(q, na.rm = na_rm)^2/nb_indiv
+        qq <- (indiv_mat_rs %*% q_fast)^2/nb_indiv
         return(rowSums(matrix(qq, ncol = K)))  # genewise scores
     }
 
@@ -246,26 +237,30 @@ vc_score_h_perm <- function(y, x, indiv, phi, w,
     if(!parallel_comp){
         if(progressbar){
             gene_Q <- pbapply::pbsapply(perm_list, compute_genewise_scores,
-                                        indiv_mat = indiv_mat,
-                                        avg_xtx_inv_tx = avg_xtx_inv_tx)
+                                        indiv_mat_rs = rowSums(indiv_mat),
+                                        avg_xtx_inv_tx = avg_xtx_inv_tx,
+                                        yt_mu_reshaped = matrix(yt_mu, ncol = g * n_t, nrow = n))
         }else{
             gene_Q <- vapply(perm_list, compute_genewise_scores,
                              FUN.VALUE = rep(1.1, g),
-                             indiv_mat = indiv_mat,
-                             avg_xtx_inv_tx = avg_xtx_inv_tx)
+                             indiv_mat_rs = rowSums(indiv_mat),
+                             avg_xtx_inv_tx = avg_xtx_inv_tx,
+                             yt_mu_reshaped = matrix(yt_mu, ncol = g * n_t, nrow = n))
         }
     }else{
         if(progressbar){
             gene_Q <- pbapply::pbsapply(perm_list, compute_genewise_scores,
-                                        indiv_mat = indiv_mat,
+                                        indiv_mat_rs = rowSums(indiv_mat),
                                         avg_xtx_inv_tx = avg_xtx_inv_tx,
+                                        yt_mu_reshaped = matrix(yt_mu, ncol = g * n_t, nrow = n),
                                         cl = nb_cores)
         }else{
             gene_Q <- simplify2array(
                 parallel::mclapply(X = perm_list,
                                    FUN = compute_genewise_scores,
-                                   indiv_mat = indiv_mat,
+                                   indiv_mat_rs = rowSums(indiv_mat),
                                    avg_xtx_inv_tx = avg_xtx_inv_tx,
+                                   yt_mu_reshaped = matrix(yt_mu, ncol = g * n_t, nrow = n),
                                    mc.cores = nb_cores))
         }
     }
