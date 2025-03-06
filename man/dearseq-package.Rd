@@ -43,6 +43,8 @@ controls the false discovery rate, \emph{NAR Genomics and Bioinformatics},
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://borishejblum.github.io/dearseq}
+  \item \url{https://bioconductor.org/packages/dearseq/}
   \item Report bugs at \url{https://github.com/borishejblum/dearseq/issues}
 }
 

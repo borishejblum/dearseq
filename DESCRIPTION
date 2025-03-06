@@ -35,7 +35,8 @@ Imports:
     survey,
     tibble,
     viridisLite,
-    Rcpp
+    Rcpp,
+    RcppEigen
 Suggests: Biobase, BiocManager, BiocSet, edgeR, DESeq2, GEOquery, GSA, knitr, 
           limma, readxl, rmarkdown, S4Vectors, SummarizedExperiment, testthat, covr
 Description: Differential Expression Analysis RNA-seq data with variance 
@@ -60,4 +61,5 @@ Encoding: UTF-8
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 LinkingTo: 
-    Rcpp
+    Rcpp,
+    RcppEigen

@@ -184,24 +184,26 @@ vc_score_perm <- function(y, x, indiv, phi, w, Sigma_xi = diag(ncol(phi)),
     }
     avg_xtx_inv_tx <- nb_indiv * tcrossprod(solve(crossprod(x, x)), x)
 
-    compute_genewise_scores <- function(v, indiv_mat, avg_xtx_inv_tx) {
+    compute_genewise_scores <- function(v, indiv_mat_rs, avg_xtx_inv_tx, yt_mu_reshaped) {
         phi_perm <- phi[v, , drop = FALSE]
         phi_sig_xi_sqrt <- phi_perm %*% sig_xi_sqrt
         T_fast <- compute_T_cpp(sig_eps_inv_T, phi_sig_xi_sqrt)
-        q_fast <- matrix(yt_mu, ncol = g * n_t, nrow = n) * T_fast
-        if (na_rm & sum(is.na(q_fast)) > 0) {
+        q_fast <- yt_mu_reshaped * T_fast
+        if (na_rm && anyNA(q_fast)) {
             q_fast[is.na(q_fast)] <- 0
         }
-        q <- crossprod(indiv_mat, q_fast)
-        XT_fast <- t(x) %*% T_fast/nb_indiv
-        U_XT <- matrix(yt_mu, ncol = g * n_t, nrow = n) *
-            crossprod(avg_xtx_inv_tx, XT_fast)
-        if (na_rm & sum(is.na(U_XT)) > 0) {
-            U_XT[is.na(U_XT)] <- 0
-        }
-        U_XT_indiv <- crossprod(indiv_mat, U_XT)
-        q_ext <- q - U_XT_indiv
-        qq <- colSums(q, na.rm = na_rm)^2/nb_indiv
+        #section below is unnecessary for permuations
+        #it is only required for asymptoticp-value computation
+        # XT_fast <- t(x) %*% T_fast/nb_indiv
+        # U_XT <- matrix(yt_mu, ncol = g * n_t, nrow = n) *
+        #     crossprod(avg_xtx_inv_tx, XT_fast)
+        # if (na_rm & sum(is.na(U_XT)) > 0) {
+        #     U_XT[is.na(U_XT)] <- 0
+        # }
+        # U_XT_indiv <- crossprod(indiv_mat, U_XT)
+        # q <- crossprod(indiv_mat, q_fast)
+        # q_ext <- q - U_XT_indiv
+        qq <- (indiv_mat_rs %*% q_fast)^2/nb_indiv
         return(rowSums(matrix(qq, ncol = K)))  # genewise scores
     }
 
@@ -224,10 +226,14 @@ vc_score_perm <- function(y, x, indiv, phi, w, Sigma_xi = diag(ncol(phi)),
         }
     }
 
+
     gene_Q <- pbapply::pbsapply(perm_list, compute_genewise_scores,
-                                indiv_mat = indiv_mat,
+                                indiv_mat_rs = rowSums(indiv_mat),
                                 avg_xtx_inv_tx = avg_xtx_inv_tx,
+                                yt_mu_reshaped = matrix(yt_mu, ncol = g * n_t, nrow = n),
                                 cl = par_clust)
+
+
 
     if(parallel_comp && .Platform$OS.type != "unix"){
         parallel::stopCluster(par_clust)

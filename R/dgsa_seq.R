@@ -246,7 +246,7 @@
 #'                     n_perm = 1000, parallel_comp = FALSE)
 #'
 #'mean(res_genes$pvals$rawPval < 0.05)
-#'summary(res_genes$pvals$adjPval)
+#'summary(res_genes$pvals$rawPval)
 #'}
 #'@export
 dgsa_seq <- function(exprmat = NULL, object = NULL,

@@ -8,8 +8,8 @@
 #'\tabular{ll}{
 #'Package: \tab dearseq\cr
 #'Type: \tab Package\cr
-#'Version: \tab 1.13.5\cr
-#'Date: \tab 2025-02-28\cr
+#'Version: \tab 1.13.4\cr
+#'Date: \tab 2023-09-06\cr
 #'License:\tab \href{http://www.gnu.org/licenses/gpl-2.0.txt}{GPL-2}\cr
 #'}
 #'The two main functions of the \code{dearseq} package are
@@ -31,6 +31,7 @@
 #'
 ## usethis namespace: start
 #' @importFrom Rcpp sourceCpp
+#' @import RcppEigen
 #' @useDynLib dearseq, .registration = TRUE
 ## usethis namespace: end
 "_PACKAGE"

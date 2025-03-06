@@ -41,7 +41,7 @@ A list with the following elements:\itemize{
 }
 }
 \description{
-This function computes the variance component score test statistics for 
+This function computes the variance component score test statistics for
 homogeneous trajectories
 }
 \examples{
