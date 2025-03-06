@@ -52,8 +52,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: ubuntu-latest, r: 'release', bioc: '3.20', cont: "bioconductor/bioconductor_docker:RELEASE_3_20", rspm: "https://packagemanager.posit.co/cran/__linux__/jammy/latest" }
-          - { os: ubuntu-latest, r: 'devel', bioc: '3.21', http-user-agent: 'release', cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.posit.co/cran/__linux__/focal/latest" }
+          - { os: ubuntu-latest, r: 'release', bioc: '3.20', cont: "bioconductor/bioconductor_docker:RELEASE_3_20", rspm: "https://packagemanager.posit.co/cran/latest" }
+          - { os: ubuntu-latest, r: 'devel', bioc: '3.21', http-user-agent: 'release', cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.posit.co/cran/latest" }
           - { os: macOS-latest, r: 'release', bioc: '3.20'}
           - { os: windows-latest, r: 'release', bioc: '3.20', rtools-version: '43'}
           ## Check https://github.com/r-lib/actions/tree/master/examples
@@ -201,12 +201,6 @@ jobs:
           }
           message(paste('****', Sys.time(), 'pass number 2 at installing dependencies: any remaining dependencies ****'))
           remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = FALSE, upgrade = TRUE)
-        shell: Rscript {0}
-
-      - name: Install Biobase
-        run: |
-          ## Install Biobase
-          BiocManager::install("Biobase")
         shell: Rscript {0}
 
       - name: Install BiocGenerics
