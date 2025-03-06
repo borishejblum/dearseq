@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   dearseqUserguide: dearseqUserguide.html
-last_built: 2025-03-06T16:51Z
+last_built: 2025-03-06T17:20Z
 urls:
   reference: https://borishejblum.github.io/dearseq/reference
   article: https://borishejblum.github.io/dearseq/articles
