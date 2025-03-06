@@ -125,7 +125,7 @@ vc_score_perm <- function(y, x, indiv, phi, w, Sigma_xi = diag(ncol(phi)),
 
     ## OLS for conditional mean -----
     y_T <- t(y)
-    if (na_rm & sum(is.na(y_T)) > 0) {
+    if (na_rm && anyNA(y_T)) {
         y_T0 <- y_T
         y_T0[is.na(y_T0)] <- 0
         yt_mu <- y_T - x %*% solve(crossprod(x)) %*% t(x) %*% y_T0
@@ -197,7 +197,7 @@ vc_score_perm <- function(y, x, indiv, phi, w, Sigma_xi = diag(ncol(phi)),
         # XT_fast <- t(x) %*% T_fast/nb_indiv
         # U_XT <- matrix(yt_mu, ncol = g * n_t, nrow = n) *
         #     crossprod(avg_xtx_inv_tx, XT_fast)
-        # if (na_rm & sum(is.na(U_XT)) > 0) {
+        # if (na_rm && anyNA(U_XT)) {
         #     U_XT[is.na(U_XT)] <- 0
         # }
         # U_XT_indiv <- crossprod(indiv_mat, U_XT)

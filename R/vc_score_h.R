@@ -194,7 +194,7 @@ vc_score_h <- function(y, x, indiv, phi, w, Sigma_xi = diag(ncol(phi)),
         indiv_mat <- matrix(as.numeric(indiv), ncol = 1)
     }
 
-    if (na_rm & sum(is.na(q_fast)) > 0) {
+    if (na_rm && anyNA(q_fast)) {
         q_fast[is.na(q_fast)] <- 0
     }
     q <- crossprod(indiv_mat, q_fast)
@@ -202,7 +202,7 @@ vc_score_h <- function(y, x, indiv, phi, w, Sigma_xi = diag(ncol(phi)),
     avg_xtx_inv_tx <- nb_indiv * tcrossprod(solve(crossprod(x, x)), x)
     U_XT <- matrix(yt_mu, ncol = g * n_t, nrow = n) *
         crossprod(avg_xtx_inv_tx, XT_fast)
-    if (na_rm & sum(is.na(U_XT)) > 0) {
+    if (na_rm && anyNA(U_XT)) {
         U_XT[is.na(U_XT)] <- 0
     }
     U_XT_indiv <- crossprod(indiv_mat, U_XT)

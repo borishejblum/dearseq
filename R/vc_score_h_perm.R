@@ -223,14 +223,14 @@ vc_score_h_perm <- function(y, x, indiv, phi, w,
         phi_sig_xi_sqrt <- phi_perm %*% sig_xi_sqrt
         T_fast <- compute_T_cpp(sig_eps_inv_T, phi_sig_xi_sqrt)
         q_fast <- matrix(yt_mu, ncol = g * n_t, nrow = n) * T_fast
-        if (na_rm & sum(is.na(q_fast)) > 0) {
+        if (na_rm && anyNA(q_fast)) {
             q_fast[is.na(q_fast)] <- 0
         }
         q <- crossprod(indiv_mat, q_fast)
         XT_fast <- t(x) %*% T_fast/nb_indiv
         U_XT <- matrix(yt_mu, ncol = g * n_t, nrow = n) *
             crossprod(avg_xtx_inv_tx, XT_fast)
-        if (na_rm & sum(is.na(U_XT)) > 0) {
+        if (na_rm && anyNA(U_XT)) {
             U_XT[is.na(U_XT)] <- 0
         }
         U_XT_indiv <- crossprod(indiv_mat, U_XT)

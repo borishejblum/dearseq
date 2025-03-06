@@ -180,7 +180,7 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
     }
 
     # remove NA to compute the bandwith
-    if(sum(is.na(mu_x))>0 & na.rm){
+    if(na.rm && anyNA(mu_x)){
       mu_x_nona <- na.omit(mu_x)
     }else{
       mu_x_nona <- mu_x
@@ -309,7 +309,7 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
                             xout = reverse_trans(mu_x),
                             rule = 2)$y)
     cnt <- 0
-    while((sum(is.na(w)) > 0 | sum(is.infinite(w)) > 0 ) & cnt < 5){
+    while(cnt < 5 && (anyNA(w) || sum(is.infinite(w)) > 0 )){
       cnt <- cnt + 1
       bw <- 2*bw
       min_gridsize <- ceiling((max(mu_x_fit) - min(mu_x_fit))/(4*bw))+1
@@ -322,7 +322,7 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
     }
     weights <- matrix(w, nrow(mu_x), ncol(mu_x))
   }
-  if(sum(is.na(weights)) < 1){
+  if(!anyNA(weights)){
     if(sum(weights < 0) > 0){
       stop("negative variance weights estimated")
     }

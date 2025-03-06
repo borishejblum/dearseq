@@ -367,7 +367,7 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
   stopifnot(is.matrix(x) | is.data.frame(x))
   stopifnot(is.matrix(phi) | is.data.frame(phi))
 
-  if (sum(is.na(y)) > 0 & na.rm_gsaseq) {
+  if (na.rm_gsaseq && anyNA(y)) {
     warning("'y' contains ", sum(is.na(y)), " `NA` values. ",
             "Currently they are ignored in the computations but ",
             "you should think carefully about where do those NA/NaN ",
