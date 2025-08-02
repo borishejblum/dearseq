@@ -10,7 +10,7 @@ plot_ord_pvals(pvals, signif_threshold = 0.05)
 \item{pvals}{a vector of length \code{n} containing the raw p-values for
 each gene}
 
-\item{signif_threshold}{a value between \code{0} and {1} specifying the 
+\item{signif_threshold}{a value between \code{0} and {1} specifying the
 nominal significance threshold. Default is \code{0.05}.}
 }
 \value{
@@ -26,7 +26,7 @@ n <- 1000 #number of genes
 nr=5 #number of measurements per subject (grouped data)
 ni=50 #number of subjects
 r <- nr*ni #number of measurements
-t <- matrix(rep(1:nr), ni, ncol=1, nrow=r) # the variable to be tested 
+t <- matrix(rep(1:nr), ni, ncol=1, nrow=r) # the variable to be tested
 sigma <- 0.5
 x <- matrix(1, ncol=1, nrow=r) #no covariates only intercept
 y.tilde <- rnorm(r, sd = sigma)
@@ -39,6 +39,6 @@ res_genes <- dear_seq(exprmat=y, covariates=x, variables2test=t,
                    which_test = "asymptotic",
                    which_weights='none', preprocessed=TRUE)
 
-#Plot 
+#Plot
 plot_ord_pvals(res_genes$pvals$rawPval)
 }

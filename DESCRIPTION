@@ -49,13 +49,13 @@ Description: Differential Expression Analysis RNA-seq data with variance
              Thiébaut R & Hejblum BP (2020) dearseq: a variance component 
              score test for RNA-Seq differential analysis that effectively 
              controls the false discovery rate, NAR Genomics and Bioinformatics,
-             2(4):lqaa093.
+             2(4):lqaa093. <doi: 10.1093/biostatistics/kxx005>
 License: GPL-2 | file LICENSE
 biocViews: BiomedicalInformatics, CellBiology, DifferentialExpression, DNASeq,
         GeneExpression, Genetics, GeneSetEnrichment, ImmunoOncology, KEGG,
         Regression, RNASeq, Sequencing, SystemsBiology, TimeCourse, Transcription, 
         Transcriptomics
-URL: https://borishejblum.github.io/dearseq, https://bioconductor.org/packages/dearseq/
+URL: https://borishejblum.github.io/dearseq/, https://bioconductor.org/packages/dearseq/
 BugReports: https://github.com/borishejblum/dearseq/issues
 Encoding: UTF-8
 RoxygenNote: 7.3.2

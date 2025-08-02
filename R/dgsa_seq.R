@@ -180,13 +180,12 @@
 #'
 #'@references Agniel D & Hejblum BP (2017). Variance component score test for
 #'time-course gene set analysis of longitudinal RNA-seq data,
-#'\emph{Biostatistics}, 18(4):589-604.
-#'\href{https://doi.org/10.1093/biostatistics/kxx005}{10.1093/biostatistics/kxx005}.
+#'\emph{Biostatistics}, 18(4):589-604. \doi{doi:10.1093/biostatistics/kxx005}.
 #'\href{https://arxiv.org/abs/1605.02351}{arXiv:1605.02351}.
 #'
 #'@references Law, C. W., Chen, Y., Shi, W., & Smyth, G. K. (2014). voom:
 #'Precision weights unlock linear model analysis tools for RNA-seq read counts.
-#'\emph{Genome Biology}, 15(2), R29.
+#'\emph{Genome Biology}, 15(2), R29. \doi{doi:10.1186/gb-2014-15-2-r29}.
 #'
 #'@importFrom stats p.adjust as.formula model.matrix
 #'@importFrom matrixStats rowVars
@@ -194,18 +193,24 @@
 #'
 #'@examples
 #'
-#'nsims <- 2 #100
+#'nsims <- 2 #500
 #'res_quant <- list()
-#'for(i in 1:2){
-#'  n <- 2000#0
-#'  nr <- 3
-#'  r <- nr*20 #4*nr#100*nr
+#'for(i in 1:nsims){
+#'  n <- 3000
+#'  na <- 2
+#'  arm_size <- 25
+#'  nr <- 2
+#'  r <- na*arm_size*nr
 #'  t <- matrix(rep(1:nr), r/nr, ncol=1, nrow=r)
+#'  a <- matrix(rep(1:na), r/nr, ncol=1, nrow=r)
 #'  sigma <- 0.4
 #'  b0 <- 1
 #'
 #'  #under the null:
 #'  b1 <- 0
+#'
+#'  #under the alternative
+#'  #b1 <- 1
 #'
 #'  y.tilde <- b0 + b1*t + rnorm(r, sd = sigma)
 #'  y <- t(matrix(rnorm(n*r, sd = sqrt(sigma*abs(y.tilde))), ncol=n, nrow=r) +
@@ -214,27 +219,25 @@
 #'
 #'  #run test
 #'  res <- dgsa_seq(exprmat = y, covariates = x, variables2test = t,
-#'                 genesets=lapply(0:9, function(x){x*10+(1:10)}),
+#'                 genesets=lapply(0:99, function(x){x*30+(1:30)}),
 #'                 cov_variables2test_eff = matrix(1),
 #'                 sample_group = rep(1:(r/nr), each=nr),
 #'                 which_test='asymptotic',
 #'                 which_weights='none', preprocessed=TRUE)
-#'  res_genes <- dgsa_seq(exprmat = y, covariates = x,
-#'                       variables2test = cbind(t),#, rnorm(r)), #t^2
-#'                       genesets = NULL,
-#'                       cov_variables2test_eff = diag(1),
-#'                       sample_group = rep(1:(r/nr), each=nr),
-#'                       which_test = 'asymptotic',
-#'                       which_weights = 'none', preprocessed = TRUE)
-#'  length(res_genes$pvals[, 'rawPval'])
-#'  quantile(res_genes$pvals[, 'rawPval'])
-#'  res_quant[[i]] <- res_genes$pvals[, 'rawPval']
+#'  length(res$pvals[, 'rawPval'])
+#'  quantile(res$pvals[, 'rawPval'])
+#'
+#'  res_quant[[i]] <- res$pvals[, 'rawPval'] #res$pvals[, 'adjPval']
+#'
+#'  cat(i, "/", nsims, "\n", sep="")
 #'}
-#'
-#'
+#'mean(unlist(res_quant)<0.05)
+#'qqplot(y = unlist(res_quant), x=runif(500), ylab="Raw p-values",
+#'       xlab = "Uniform distribution (expected under H0)")
+#'qqline(unlist(res_quant), distribution = qunif, col="red")
+#'#hist(unlist(res_quant)) #plot(density(unlist(res_quant)))
 #'#round(rowMeans(vapply(res_quant, FUN = quantile, FUN.VALUE = rep(1.1, 5))), 3)
-#'#plot(density(unlist(res_quant)))
-#'#mean(unlist(res_quant)<0.05)
+#'
 #'
 #'if(interactive()){
 #'res_genes <- dgsa_seq(exprmat = y, covariates = x, variables2test = t,
@@ -276,6 +279,23 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
                      na.rm_gsaseq = TRUE,
                      verbose = TRUE) {
 
+  # Setting unspecified args to their defaults
+  if(length(which_test) > 1){
+    which_test <- which_test[1]
+  }
+  if(length(weights_var2test_condi) > 1){
+    weights_var2test_condi <- (which_test != "permutation")
+  }
+  if(length(which_weights) > 1){
+    which_weights <- which_weights[1]
+  }
+  if(length(padjust_methods) > 1){
+    padjust_methods <- padjust_methods[1]
+  }
+  if(length(kernel) > 1){
+    kernel <- kernel[1]
+  }
+
   if(weights_var2test_condi & which_test == "permutation"){
       warning("`weights_var2test_condi` must be FALSE for the ",
               "permutation test, as `phi` gets permuted.")
@@ -313,7 +333,7 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
       }
       stopifnot(!is.null(SummarizedExperiment::colData(object)))
       stopifnot(nrow(SummarizedExperiment::colData(object)) ==
-                  DESeq2::counts(object))
+                  ncol(DESeq2::counts(object)))
       y <- DESeq2::counts(object)
       design_df <- as.data.frame(SummarizedExperiment::colData(object)[, c(covariates, variables2test), drop=FALSE])
     }else if(is(object, "ExpressionSet")){
@@ -393,7 +413,6 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
 
   # normalization if needed
   if (!preprocessed) {
-    R <- colSums(y, na.rm = TRUE)
     y_lcpm <- apply(y, MARGIN = 2, function(v) {
       log2((v + 0.5)/(sum(v, na.rm = TRUE) + 1) * 10^6)
     })

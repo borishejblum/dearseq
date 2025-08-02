@@ -72,7 +72,7 @@ We sought to investigate how many of the 373 genes *Singhania et al.* found usin
 
 It results in 54 patients of whom 21 are active TB patients, 21 are latent TB patients and 12 are healthy control particiants.
 
-For more details, check the article from *Berry  et al., 2010* [here](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3492754/).
+For more details, check the article from *Berry  et al., 2010* [here](https://pmc.ncbi.nlm.nih.gov/articles/PMC3492754/).
 
 
 
@@ -121,6 +121,12 @@ It was extracted from one of the GEO supplementary files (namely the
 
 ```{r London-download, message=FALSE, results='hide'}
 library(readxl)
+# library(rio)
+# url_london <- GEOquery::getGEOSuppFiles('GSE107991', 
+#                                          filter_regex="edgeR_normalized_Berry_London", 
+#                                          fetch_files = FALSE)$url[1]
+# London <- rio::import(url_london)
+ 
 GEOquery::getGEOSuppFiles('GSE107991', 
                           filter_regex="edgeR_normalized_Berry_London")
 London <- readxl::read_excel("GSE107991/GSE107991_edgeR_normalized_Berry_London.xlsx")

@@ -11,13 +11,11 @@
 #'
 #'@references Baduel P, Arnold B, Weisman CM, Hunter B & Bomblies K (2016).
 #'Habitat-Associated Life History and Stress-Tolerance Variation in Arabidopsis
-#'Arenosa. \emph{Plant Physiology}, 171(1):437-51.
-#'\href{https://doi.org/10.1104/pp.15.01875}{10.1104/pp.15.01875}.
+#'Arenosa. \emph{Plant Physiology}, 171(1):437-51. \doi{doi:10.1104/pp.15.01875}
 
 #'@references Agniel D & Hejblum BP (2017). Variance component score test for
 #'time-course gene set analysis of longitudinal RNA-seq data,
-#'\emph{Biostatistics}, 18(4):589-604.
-#'\href{https://doi.org/10.1093/biostatistics/kxx005}{10.1093/biostatistics/kxx005}.
+#'\emph{Biostatistics}, 18(4):589-604. \doi{doi:10.1093/biostatistics/kxx005}
 #'\href{https://arxiv.org/abs/1605.02351}{arXiv:1605.02351}.
 #'
 #'@format 3 objects\itemize{
@@ -46,12 +44,12 @@
 #'\item{\code{baduel_gmt}:} a \code{gmt} object containing 5 gene sets of
 #'interest (see \code{\link[GSA]{GSA.read.gmt}}), which is simply a
 #'\code{list} with the 3 following components:\itemize{
-#'\item \code{genesets}: a \code{list} of \code{n} gene identifiers vectors 
-#'composing eachgene set (each gene set is represented as the vector of the 
+#'\item \code{genesets}: a \code{list} of \code{n} gene identifiers vectors
+#'composing eachgene set (each gene set is represented as the vector of the
 #'gene identifiers composing it)
-#'\item \code{geneset.names}: a vector of length \code{n} containing the gene 
+#'\item \code{geneset.names}: a vector of length \code{n} containing the gene
 #'set names (i.e. gene sets identifiers)
-#'\item{geneset.descriptions}: a vector of length \code{n} containing gene set 
+#'\item{geneset.descriptions}: a vector of length \code{n} containing gene set
 #'descriptions (e.g. textual information on their biological function)
 #'}
 #'
@@ -88,7 +86,7 @@
 #' }
 #'
 #'
-#' @source \url{http://www.ncbi.nlm.nih.gov/bioproject/PRJNA312410}
+#' @source \url{https://www.ncbi.nlm.nih.gov/bioproject/PRJNA312410}
 #'
 #' @keywords datasets
 #' @docType data

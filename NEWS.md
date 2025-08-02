@@ -1,7 +1,11 @@
+CHANGES IN VERSION 1.13.7 (2025-08-02):
+--------------------------------------
+ + fixing a bug with DESeq2::DESeqDataSet input checks
+
 CHANGES IN VERSION 1.13.6 (2025-03-06):
 --------------------------------------
  + added C++ code to speed-up computational bottlenecks in permutation tests creating a new dependence on `RcppEigen`
- + added a `pkgdown` companion website at https://borishejblum.github.io/dearseq
+ + added a `pkgdown` companion website at https://borishejblum.github.io/dearseq/
  + fixing vignette last plot
  
 

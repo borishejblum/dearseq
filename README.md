@@ -4,14 +4,14 @@
 # `dearseq` <a><img src='man/figures/logo.svg' align="right" height="139" /></a>
 
 [![BioC
-status](http://www.bioconductor.org/shields/build/release/bioc/dearseq.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/dearseq)
+status](https://www.bioconductor.org/shields/build/release/bioc/dearseq.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/dearseq/)
 [![BioC dev
-status](http://www.bioconductor.org/shields/build/devel/bioc/dearseq.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/dearseq)
+status](https://www.bioconductor.org/shields/build/devel/bioc/dearseq.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/dearseq/)
 [![R build
 status](https://github.com/borishejblum/dearseq/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/borishejblum/dearseq/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/borishejblum/dearseq/branch/master/graph/badge.svg)](https://codecov.io/gh/borishejblum/dearseq?branch=master)
-[![Download](http://www.bioconductor.org/shields/downloads/release/dearseq.svg)](https://bioconductor.org/packages/stats/bioc/dearseq)
+coverage](https://codecov.io/gh/borishejblum/dearseq/branch/devel/graph/badge.svg)](https://app.codecov.io/gh/borishejblum/dearseq?branch=devel)
+[![Download](https://www.bioconductor.org/shields/downloads/release/dearseq.svg)](https://bioconductor.org/packages/stats/bioc/dearseq)
 <!-- [![Downloads](https://cranlogs.r-pkg.org/badges/dearseq?color=blue)](https://www.r-pkg.org/pkg/dearseq) -->
 
 **Authors:** [Boris Hejblum](https://borishejblum.science), Denis
@@ -55,7 +55,7 @@ website](https://borishejblum.github.io/dearseq/)
 ## Installation
 
 ***`dearseq` is available from
-[Bioconductor](http://www.bioconductor.org)***
+[Bioconductor](https://www.bioconductor.org)***
 
 ``` r
 #install.packages("BiocManager")
