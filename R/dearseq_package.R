@@ -8,7 +8,7 @@
 #'\tabular{ll}{
 #'Package: \tab dearseq\cr
 #'Type: \tab Package\cr
-#'Version: \tab 1.13.7\cr
+#'Version: \tab 1.20.2\cr
 #'Date: \tab 2025-08-02\cr
 #'License:\tab \href{http://www.gnu.org/licenses/gpl-2.0.txt}{GPL-2}\cr
 #'}
