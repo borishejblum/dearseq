@@ -4,4 +4,7 @@ template:
   bslib:
     bootswatch: pulse
     pkgdown-nav-height: 100px
+authors:
+  Boris P Hejblum:
+    href: https://borishejblum.science
 
