@@ -105,6 +105,12 @@
 #'observation-level. Default is \code{TRUE}, and weights are then estimated at
 #'the gene-level.
 #'
+#'@param log_scale_gene_weights a logical flag when \code{gene_based_weights =
+#' TRUE}, whether to smooth the variance estimator on the log scale before 
+#'exponentiation back, guaranteeing positive smoothed variances (unlike 
+#'smoothing on the raw scale, which can extrapolate to negative values). 
+#'Default is \code{TRUE}.
+#'
 #'@param bw a character string indicating the smoothing bandwidth selection
 #'method to use. See \code{\link[stats]{bandwidth}} for details. Possible values
 #' are \code{'ucv'}, \code{'SJ'}, \code{'bcv'}, \code{'nrd'} or \code{'nrd0'}
@@ -265,6 +271,7 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
                      nb_cores = parallel::detectCores(logical=FALSE) - 1,
                      preprocessed = FALSE,
                      gene_based_weights = TRUE,
+                     log_scale_gene_weights = TRUE,
                      bw = "nrd",
                      kernel = c("gaussian", "epanechnikov", "rectangular",
                                 "triangular", "biweight", "tricube", "cosine",
@@ -500,6 +507,7 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
                                        use_phi = weights_var2test_condi,
                                        preprocessed = TRUE,
                                        gene_based = gene_based_weights,
+                                       log_scale_gene_weights = log_scale_gene_weights,
                                        bw = bw, kernel = kernel,
                                        transform = transform,
                                        verbose = verbose,

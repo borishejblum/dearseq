@@ -26,6 +26,12 @@
 #'gene-level. Default is \code{FALSE}, when weights will be estimated at the
 #'observation-level.
 #'
+#'@param log_scale_gene_weights a logical flag when \code{gene_based = TRUE}, 
+#'whether to smooth the variance estimator on the log scale before 
+#'exponentiation back, guaranteeing positive smoothed variances (unlike 
+#'smoothing on the raw scale, which can extrapolate to negative values). 
+#'Default is \code{TRUE}.
+#'
 #'@param bw a character string indicating the smoothing bandwidth selection
 #'method to use. See \code{\link[stats]{bandwidth}} for details. Possible values
 #'are \code{'ucv'}, \code{'SJ'}, \code{'bcv'}, \code{'nrd'} or \code{'nrd0'}.
@@ -89,7 +95,7 @@
 
 
 sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
-                       gene_based = FALSE,
+                       gene_based = FALSE, log_scale_gene_weights = TRUE,
                        bw = c("nrd", "ucv", "SJ", "nrd0", "bcv"),
                        kernel = c("gaussian", "epanechnikov", "rectangular",
                                   "triangular", "biweight", "tricube", "cosine",
@@ -152,7 +158,8 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
   lse <- log(sq_err)
   v <- colMeans(sq_err, na.rm = na.rm)
   mu_avg <- colMeans(mu, na.rm = na.rm)
-
+  log_v <- log(v)
+  
   if (gene_based) {
     mu_x <- mu_avg
   } else {
@@ -216,7 +223,7 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
   } else if (kernel == "rectangular") {
     kern_func2 <- function(x, bw) {
       a <- bw * sqrt(3)
-      (abs(x) < a) * 0.5/a  #ifelse(abs(x) < a, 0.5/a, 0)
+      (abs(x) < a) * 0.5/a  
 
     }
   } else if (kernel == "triangular") {
@@ -261,19 +268,36 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
 
   if (gene_based) {
 
-    w <- function(x) {
-      x_ctr <- (mu_x - x)
-      kernx <- kern_func(x_ctr, bw)
-      Sn1 <- kernx * x_ctr
-      #Sn2 <- Sn1 * x_ctr
-      b <- kernx * (sum(Sn1 * x_ctr) - x_ctr * sum(Sn1))
-      l <- b/sum(b)
-      sum(l * v)
+    if (log_scale_gene_weights) {
+      w_log <- function(x) {
+        
+        x_ctr <- (mu_x - x)
+        kernx <- kern_func(x_ctr, bw)
+        Sn1 <- kernx * x_ctr
+        b <- kernx * (sum(Sn1 * x_ctr) - x_ctr * sum(Sn1))
+        l <- b/sum(b)
+        log_weight <- sum(l * log_v)
+        exp(log_weight)
+      }
+      
+      kern_fit <- vapply(mu_x, w_log, FUN.VALUE = 1.1)
+      weights <- 1/matrix(kern_fit, nrow = n, ncol = p, byrow = TRUE)
+    } 
+    else {
+      w <- function(x) {
+        x_ctr <- (mu_x - x)
+        kernx <- kern_func(x_ctr, bw)
+        Sn1 <- kernx * x_ctr
+        b <- kernx * (sum(Sn1 * x_ctr) - x_ctr * sum(Sn1))
+        l <- b/sum(b)
+        sum(l * v)
+      }
+      
+      
+      kern_fit <- vapply(mu_x, w, FUN.VALUE = 1.1)
+      weights <- 1/matrix(kern_fit, nrow = n, ncol = p, byrow = TRUE)
     }
-
-
-    kern_fit <- vapply(mu_x, w, FUN.VALUE = 1.1)
-    weights <- 1/matrix(kern_fit, nrow = n, ncol = p, byrow = TRUE)
+ 
     if (sum(!is.finite(weights)) > 0) {
       warning("At least 1 non finite weight. ",
               "Try to increase the bandwith")
