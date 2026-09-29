@@ -125,7 +125,9 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
     warning(nb_g_sum0, " y rows sum to 0 (i.e. are never observed)",
             "and have been removed")
   }
-
+  if (sum(is.infinite(y)) > 0) {
+    stop("There is infinites values in your y")
+  }
   kernel <- match.arg(kernel)
   if (preprocessed) {
     y_lcpm <- t(y[observed, ])
@@ -166,8 +168,15 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
     mu_x <- mu
     mu_x[is.na(y_lcpm)] <- NA
   }
+  
   # transforming if necessary
   if (transform) {
+    if (!na.rm) {
+      stop("Cannot transform the data without ignoring NA/NaN ",
+           "values...\nTry setting 'na.rm' or na.rm_gsaseq' to 'TRUE' ",
+           "to ignore NA/NaN values, but think carefully about where ",
+           "does those NA/NaN come from...")
+    }
     sd_mu <- sd(mu_x, na.rm = na.rm)
     mean_mu <- mean(mu_x, na.rm = na.rm)
     mu_x <- pnorm((mu_x - mean_mu)/sd_mu)
@@ -269,17 +278,26 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
   if (gene_based) {
 
     if (log_scale_gene_weights) {
+      
+      mu_x_fit <- mu_x
+      log_v_fit <- log_v
+      
+      inf_log_v <- which(is.infinite(log_v_fit))
+      if (length(inf_log_v) > 0) {
+        mu_x_fit <- mu_x_fit[-inf_log_v]
+        log_v_fit <- log_v_fit[-inf_log_v]
+      }
+      
       w_log <- function(x) {
-        
-        x_ctr <- (mu_x - x)
+        x_ctr <- (mu_x_fit - x)
         kernx <- kern_func(x_ctr, bw)
         Sn1 <- kernx * x_ctr
         b <- kernx * (sum(Sn1 * x_ctr) - x_ctr * sum(Sn1))
         l <- b/sum(b)
-        log_weight <- sum(l * log_v)
+        log_weight <- sum(l * log_v_fit)
         exp(log_weight)
       }
-      
+
       kern_fit <- vapply(mu_x, w_log, FUN.VALUE = 1.1)
       weights <- 1/matrix(kern_fit, nrow = n, ncol = p, byrow = TRUE)
     } 
