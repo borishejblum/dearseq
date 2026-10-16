@@ -11,6 +11,7 @@ sp_weights(
   use_phi = TRUE,
   preprocessed = FALSE,
   gene_based = FALSE,
+  log_scale_gene_weights = TRUE,
   bw = c("nrd", "ucv", "SJ", "nrd0", "bcv"),
   kernel = c("gaussian", "epanechnikov", "rectangular", "triangular", "biweight",
     "tricube", "cosine", "optcosine"),
@@ -42,6 +43,12 @@ log(counts) per million.}
 \item{gene_based}{a logical flag indicating whether to estimate weights at the
 gene-level. Default is \code{FALSE}, when weights will be estimated at the
 observation-level.}
+
+\item{log_scale_gene_weights}{a logical flag when \code{gene_based = TRUE}, 
+whether to smooth the variance estimator on the log scale before 
+exponentiation back, guaranteeing positive smoothed variances (unlike 
+smoothing on the raw scale, which can extrapolate to negative values). 
+Default is \code{TRUE}.}
 
 \item{bw}{a character string indicating the smoothing bandwidth selection
 method to use. See \code{\link[stats]{bandwidth}} for details. Possible values

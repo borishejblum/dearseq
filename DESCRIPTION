@@ -58,7 +58,7 @@ biocViews: BiomedicalInformatics, CellBiology, DifferentialExpression, DNASeq,
 URL: https://borishejblum.github.io/dearseq/, https://bioconductor.org/packages/dearseq/
 BugReports: https://github.com/borishejblum/dearseq/issues
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,

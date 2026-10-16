@@ -21,6 +21,7 @@ dgsa_seq(
   nb_cores = parallel::detectCores(logical = FALSE) - 1,
   preprocessed = FALSE,
   gene_based_weights = TRUE,
+  log_scale_gene_weights = TRUE,
   bw = "nrd",
   kernel = c("gaussian", "epanechnikov", "rectangular", "triangular", "biweight",
     "tricube", "cosine", "optcosine"),
@@ -137,6 +138,12 @@ log(counts) per million.}
 indicating whether to estimate weights at the gene-level, or rather at the
 observation-level. Default is \code{TRUE}, and weights are then estimated at
 the gene-level.}
+
+\item{log_scale_gene_weights}{a logical flag when \code{gene_based_weights =
+TRUE}, whether to smooth the variance estimator on the log scale before 
+exponentiation back, guaranteeing positive smoothed variances (unlike 
+smoothing on the raw scale, which can extrapolate to negative values). 
+Default is \code{TRUE}.}
 
 \item{bw}{a character string indicating the smoothing bandwidth selection
 method to use. See \code{\link[stats]{bandwidth}} for details. Possible values
