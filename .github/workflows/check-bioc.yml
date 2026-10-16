@@ -230,7 +230,6 @@ jobs:
         shell: Rscript {0}
 
       - name: Install BiocSet
-        if:  env.has_RUnit == 'true'
         run: |
           ## Install BiocSet
           BiocManager::install("BiocSet")
