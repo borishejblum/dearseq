@@ -18,3 +18,5 @@ checkSPweights.R
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^\.positai$
+^\.claude$

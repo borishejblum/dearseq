@@ -1,64 +1,64 @@
-#'Non parametric local heteroscedasticity weights
+#' Non parametric local heteroscedasticity weights
 #'
-#'Computes precision weights that account for heteroscedasticity in RNA-seq
-#'count data based on non-parametric local linear regression estimates.
+#' Computes precision weights that account for heteroscedasticity in RNA-seq
+#' count data based on non-parametric local linear regression estimates.
 #'
-#'@param y a numeric matrix of size \code{G x n} containing the raw RNA-seq
-#'counts or preprocessed expression from \code{n} samples for \code{G} genes.
+#' @param y a numeric matrix of size \code{G x n} containing the raw RNA-seq
+#' counts or preprocessed expression from \code{n} samples for \code{G} genes.
 #'
-#'@param x a numeric matrix of size \code{n x p} containing the model
-#'covariate(s) from \code{n} samples (design matrix).
+#' @param x a numeric matrix of size \code{n x p} containing the model
+#' covariate(s) from \code{n} samples (design matrix).
 #'
-#'@param phi a numeric design matrix of size \code{n x K} containing the K
-#'variable(s) of interest( e.g. bases of time).
+#' @param phi a numeric design matrix of size \code{n x K} containing the K
+#' variable(s) of interest( e.g. bases of time).
 #'
-#'@param use_phi a logical flag indicating whether conditional means should be
-#'conditioned on \code{phi} and on covariate(s) \code{x}, or on \code{x} alone.
-#'Default is \code{TRUE} in which case conditional means are estimated
-#'conditionally on both \code{x} and \code{phi}.
+#' @param use_phi a logical flag indicating whether conditional means should be
+#' conditioned on \code{phi} and on covariate(s) \code{x}, or on \code{x} alone.
+#' Default is \code{TRUE} in which case conditional means are estimated
+#' conditionally on both \code{x} and \code{phi}.
 #'
-#'@param preprocessed a logical flag indicating whether the expression data have
-#'already been preprocessed (e.g. log2 transformed). Default is \code{FALSE}, in
-#'which case \code{y} is assumed to contain raw counts and is normalized into
-#'log(counts) per million.
+#' @param preprocessed a logical flag indicating whether the expression data have
+#' already been preprocessed (e.g. log2 transformed). Default is \code{FALSE}, in
+#' which case \code{y} is assumed to contain raw counts and is normalized into
+#' log(counts) per million.
 #'
-#'@param gene_based a logical flag indicating whether to estimate weights at the
-#'gene-level. Default is \code{FALSE}, when weights will be estimated at the
-#'observation-level.
+#' @param gene_based a logical flag indicating whether to estimate weights at the
+#' gene-level. Default is \code{FALSE}, when weights will be estimated at the
+#' observation-level.
 #'
-#'@param log_scale_gene_weights a logical flag when \code{gene_based = TRUE}, 
-#'whether to smooth the variance estimator on the log scale before 
-#'exponentiation back, guaranteeing positive smoothed variances (unlike 
-#'smoothing on the raw scale, which can extrapolate to negative values). 
-#'Default is \code{TRUE}.
+#' @param log_scale_gene_weights a logical flag when \code{gene_based = TRUE},
+#' whether to smooth the variance estimator on the log scale before
+#' exponentiation back, guaranteeing positive smoothed variances (unlike
+#' smoothing on the raw scale, which can extrapolate to negative values).
+#' Default is \code{TRUE}.
 #'
-#'@param bw a character string indicating the smoothing bandwidth selection
-#'method to use. See \code{\link[stats]{bandwidth}} for details. Possible values
-#'are \code{'ucv'}, \code{'SJ'}, \code{'bcv'}, \code{'nrd'} or \code{'nrd0'}.
-#'Default is \code{'nrd'}.
+#' @param bw a character string indicating the smoothing bandwidth selection
+#' method to use. See \code{\link[stats]{bandwidth}} for details. Possible values
+#' are \code{'ucv'}, \code{'SJ'}, \code{'bcv'}, \code{'nrd'} or \code{'nrd0'}.
+#' Default is \code{'nrd'}.
 #'
-#'@param kernel a character string indicating which kernel should be used.
-#'Possibilities are \code{'gaussian'}, \code{'epanechnikov'},
-#'\code{'rectangular'}, \code{'triangular'}, \code{'biweight'},
-#'\code{'tricube'}, \code{'cosine'}, \code{'optcosine'}. Default is
-#'\code{'gaussian'} (NB: \code{'tricube'} kernel corresponds to the loess
-#'method).
+#' @param kernel a character string indicating which kernel should be used.
+#' Possibilities are \code{'gaussian'}, \code{'epanechnikov'},
+#' \code{'rectangular'}, \code{'triangular'}, \code{'biweight'},
+#' \code{'tricube'}, \code{'cosine'}, \code{'optcosine'}. Default is
+#' \code{'gaussian'} (NB: \code{'tricube'} kernel corresponds to the loess
+#' method).
 #'
-#'@param transform a logical flag indicating whether values should be
-#'transformed to uniform for the purpose of local linear smoothing. This may be
-#'helpful if tail observations are sparse and the specified bandwidth gives
-#'suboptimal performance there. Default is \code{TRUE}.
+#' @param transform a logical flag indicating whether values should be
+#' transformed to uniform for the purpose of local linear smoothing. This may be
+#' helpful if tail observations are sparse and the specified bandwidth gives
+#' suboptimal performance there. Default is \code{TRUE}.
 #'
-#'@param verbose a logical flag indicating whether informative messages are
-#'printed during the computation. Default is \code{TRUE}.
+#' @param verbose a logical flag indicating whether informative messages are
+#' printed during the computation. Default is \code{TRUE}.
 #'
-#'@param na.rm logical: should missing values (including \code{NA} and
-#'\code{NaN}) be omitted from the calculations? Default is \code{FALSE}.
+#' @param na.rm logical: should missing values (including \code{NA} and
+#' \code{NaN}) be omitted from the calculations? Default is \code{FALSE}.
 #'
-#'@return a list containing the following components:\itemize{
-#'\item \code{weights}: a matrix \code{n x G} containing the computed precision
-#'weights
-#'\item \code{plot_utilities}: a list containing the following elements:\itemize{
+#' @return a list containing the following components:\itemize{
+#' \item \code{weights}: a matrix \code{n x G} containing the computed precision
+#' weights
+#' \item \code{plot_utilities}: a list containing the following elements:\itemize{
 #'      \item\code{reverse_trans}: a function encoding the reverse function used
 #'      for smoothing the observations before computing the weights
 #'      \item\code{method}: the weight computation method (\code{"loclin"})
@@ -69,41 +69,43 @@
 #'      \item\code{mu}: the transformed observed counts or averages
 #'      \item\code{v}: the observed variability estimates
 #' }
-#'}
+#' }
 #'
-#'@author Boris Hejblum
+#' @author Boris Hejblum
 #'
-#'@seealso \code{\link[stats]{bandwidth}} \code{\link{density}}
+#' @seealso \code{\link[stats]{bandwidth}} \code{\link{density}}
 #'
-#'@examples
-#'set.seed(123)
+#' @examples
+#' set.seed(123)
 #'
-#'G <- 10000
-#'n <- 12
-#'p <- 2
-#'y <- sapply(1:n, FUN = function(x){rnbinom(n = G, size = 0.07, mu = 200)})
+#' G <- 10000
+#' n <- 12
+#' p <- 2
+#' y <- sapply(1:n, FUN = function(x) {
+#'   rnbinom(n = G, size = 0.07, mu = 200)
+#' })
 #'
-#'x <- sapply(1:p, FUN = function(x){rnorm(n = n, mean = n, sd = 1)})
+#' x <- sapply(1:p, FUN = function(x) {
+#'   rnorm(n = n, mean = n, sd = 1)
+#' })
 #'
-#'w <- sp_weights(y, x, use_phi=FALSE, na.rm = TRUE)
+#' w <- sp_weights(y, x, use_phi = FALSE, na.rm = TRUE)
 #'
-#'@import ggplot2
-#'@importFrom stats bw.bcv bw.nrd0 bw.nrd bw.SJ bw.ucv dnorm approx sd pnorm
-#'qnorm na.omit
-#'@importFrom KernSmooth locpoly
-#'@export
+#' @import ggplot2
+#'
+#' @importFrom stats bw.bcv bw.nrd0 bw.nrd bw.SJ bw.ucv dnorm approx sd pnorm qnorm na.omit
+#' @importFrom KernSmooth locpoly
+#' @export
 
 
 sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
                        gene_based = FALSE, log_scale_gene_weights = TRUE,
                        bw = c("nrd", "ucv", "SJ", "nrd0", "bcv"),
                        kernel = c("gaussian", "epanechnikov", "rectangular",
-                                  "triangular", "biweight", "tricube", "cosine",
-                                  "optcosine"),
+                         "triangular", "biweight", "tricube", "cosine",
+                         "optcosine"),
                        transform = TRUE, verbose = TRUE,
                        na.rm = FALSE) {
-
-
   ## dimensions & validity checks
 
   stopifnot(is.matrix(y))
@@ -114,7 +116,7 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
   n <- ncol(y)  # the number of samples measured
   qq <- ncol(x)  # the number of covariates
   stopifnot(nrow(x) == n)
-  if(use_phi){
+  if (use_phi) {
     stopifnot(nrow(phi) == n)
   }
 
@@ -123,7 +125,7 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
   nb_g_sum0 <- length(observed) - g
   if (nb_g_sum0 > 0) {
     warning(nb_g_sum0, " y rows sum to 0 (i.e. are never observed)",
-            "and have been removed")
+      "and have been removed")
   }
   if (sum(is.infinite(y)) > 0) {
     stop("There is infinites values in your y")
@@ -134,7 +136,7 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
   } else {
     # transforming raw counts to log-counts per million (lcpm)
     y_lcpm <- t(apply(y[observed, ], MARGIN = 2, function(v) {
-      log2((v + 0.5)/(sum(v) + 1) * 10^6)
+      log2((v + 0.5) / (sum(v) + 1) * 10^6)
     }))
   }
   N <- length(y_lcpm)
@@ -161,25 +163,25 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
   v <- colMeans(sq_err, na.rm = na.rm)
   mu_avg <- colMeans(mu, na.rm = na.rm)
   log_v <- log(v)
-  
+
   if (gene_based) {
     mu_x <- mu_avg
   } else {
     mu_x <- mu
     mu_x[is.na(y_lcpm)] <- NA
   }
-  
+
   # transforming if necessary
   if (transform) {
     if (!na.rm) {
       stop("Cannot transform the data without ignoring NA/NaN ",
-           "values...\nTry setting 'na.rm' or na.rm_gsaseq' to 'TRUE' ",
-           "to ignore NA/NaN values, but think carefully about where ",
-           "does those NA/NaN come from...")
+        "values...\nTry setting 'na.rm' or na.rm_gsaseq' to 'TRUE' ",
+        "to ignore NA/NaN values, but think carefully about where ",
+        "does those NA/NaN come from...")
     }
     sd_mu <- sd(mu_x, na.rm = na.rm)
     mean_mu <- mean(mu_x, na.rm = na.rm)
-    mu_x <- pnorm((mu_x - mean_mu)/sd_mu)
+    mu_x <- pnorm((mu_x - mean_mu) / sd_mu)
     reverse_trans <- function(x) {
       qnorm(x) * sd_mu + mean_mu
     }
@@ -196,20 +198,20 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
     }
 
     # remove NA to compute the bandwith
-    if(na.rm && anyNA(mu_x)){
+    if (na.rm && anyNA(mu_x)) {
       mu_x_nona <- na.omit(mu_x)
-    }else{
+    } else {
       mu_x_nona <- mu_x
     }
     bw <- switch(bw,
-                 nrd0 = stats::bw.nrd0(as.vector(mu_x_nona)),
-                 nrd = stats::bw.nrd(as.vector(mu_x_nona)),
-                 ucv = stats::bw.ucv(as.vector(mu_x_nona)),
-                 bcv = stats::bw.bcv(as.vector(mu_x_nona)),
-                 SJ = stats::bw.SJ(as.vector(mu_x_nona), method = "ste"),
-                 stop("unknown bandwidth rule: 'bw' argument",
-                      "must be among 'nrd0', 'nrd', 'ucv',",
-                      "'bcv', 'SJ'")
+      nrd0 = stats::bw.nrd0(as.vector(mu_x_nona)),
+      nrd = stats::bw.nrd(as.vector(mu_x_nona)),
+      ucv = stats::bw.ucv(as.vector(mu_x_nona)),
+      bcv = stats::bw.bcv(as.vector(mu_x_nona)),
+      SJ = stats::bw.SJ(as.vector(mu_x_nona), method = "ste"),
+      stop("unknown bandwidth rule: 'bw' argument",
+        "must be among 'nrd0', 'nrd', 'ucv',",
+        "'bcv', 'SJ'")
     )
 
     if (verbose) {
@@ -232,93 +234,92 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
   } else if (kernel == "rectangular") {
     kern_func2 <- function(x, bw) {
       a <- bw * sqrt(3)
-      (abs(x) < a) * 0.5/a  
+      (abs(x) < a) * 0.5 / a
 
     }
   } else if (kernel == "triangular") {
     kern_func <- function(x, bw) {
       h <- bw * sqrt(6)
       ax <- abs(x)
-      (ax < h) * ((1 - ax/h)/h)
+      (ax < h) * ((1 - ax / h) / h)
     }
   } else if (kernel == "tricube") {
     kern_func <- function(x, bw) {
-      h <- bw * sqrt(243/35)
+      h <- bw * sqrt(243 / 35)
       ax <- abs(x)
-      (ax < h) * (70/81 * (1 - (ax/h)^3)^3)/h
+      (ax < h) * (70 / 81 * (1 - (ax / h)^3)^3) / h
     }
   } else if (kernel == "epanechnikov") {
     kern_func <- function(x, bw) {
       h <- bw * sqrt(5)
       ax <- abs(x)
-      (ax < h) * (3/4 * (1 - (ax/h)^2)/h)
+      (ax < h) * (3 / 4 * (1 - (ax / h)^2) / h)
     }
   } else if (kernel == "biweight") {
     kern_func <- function(x, bw) {
       h <- bw * sqrt(7)
       ax <- abs(x)
-      (ax < h) * (15/16 * (1 - (ax/h)^2)^2/h)
+      (ax < h) * (15 / 16 * (1 - (ax / h)^2)^2 / h)
     }
   } else if (kernel == "cosine") {
     kern_func <- function(x, bw) {
-      h <- bw/sqrt(1/3 - 2/pi^2)
-      (abs(x) < h) * ((1 + cos(pi * x/h))/(2 * h))
+      h <- bw / sqrt(1 / 3 - 2 / pi^2)
+      (abs(x) < h) * ((1 + cos(pi * x / h)) / (2 * h))
     }
   } else if (kernel == "optcosine") {
     kern_func <- function(x, bw) {
-      h <- bw/sqrt(1 - 8/pi^2)
-      (abs(x) < h) * (pi/4 * cos(pi * x/(2 * h))/h)
+      h <- bw / sqrt(1 - 8 / pi^2)
+      (abs(x) < h) * (pi / 4 * cos(pi * x / (2 * h)) / h)
     }
   } else {
     stop("unknown kernel: 'kernel' argument must be among",
-         "'gaussian', 'rectangular', 'triangular', 'epanechnikov',",
-         "'biweight', 'cosine', 'optcosine'")
+      "'gaussian', 'rectangular', 'triangular', 'epanechnikov',",
+      "'biweight', 'cosine', 'optcosine'")
   }
 
   if (gene_based) {
 
     if (log_scale_gene_weights) {
-      
+
       mu_x_fit <- mu_x
       log_v_fit <- log_v
-      
+
       inf_log_v <- which(is.infinite(log_v_fit))
       if (length(inf_log_v) > 0) {
         mu_x_fit <- mu_x_fit[-inf_log_v]
         log_v_fit <- log_v_fit[-inf_log_v]
       }
-      
+
       w_log <- function(x) {
         x_ctr <- (mu_x_fit - x)
         kernx <- kern_func(x_ctr, bw)
         Sn1 <- kernx * x_ctr
         b <- kernx * (sum(Sn1 * x_ctr) - x_ctr * sum(Sn1))
-        l <- b/sum(b)
+        l <- b / sum(b)
         log_weight <- sum(l * log_v_fit)
         exp(log_weight)
       }
 
       kern_fit <- vapply(mu_x, w_log, FUN.VALUE = 1.1)
-      weights <- 1/matrix(kern_fit, nrow = n, ncol = p, byrow = TRUE)
-    } 
-    else {
+      weights <- 1 / matrix(kern_fit, nrow = n, ncol = p, byrow = TRUE)
+    } else {
       w <- function(x) {
         x_ctr <- (mu_x - x)
         kernx <- kern_func(x_ctr, bw)
         Sn1 <- kernx * x_ctr
         b <- kernx * (sum(Sn1 * x_ctr) - x_ctr * sum(Sn1))
-        l <- b/sum(b)
+        l <- b / sum(b)
         sum(l * v)
       }
-      
-      
+
+
       kern_fit <- vapply(mu_x, w, FUN.VALUE = 1.1)
-      weights <- 1/matrix(kern_fit, nrow = n, ncol = p, byrow = TRUE)
+      weights <- 1 / matrix(kern_fit, nrow = n, ncol = p, byrow = TRUE)
     }
- 
+
     if (sum(!is.finite(weights)) > 0) {
       warning("At least 1 non finite weight. ",
-              "Try to increase the bandwith")
+        "Try to increase the bandwith")
     }
 
   } else {
@@ -329,9 +330,9 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
     na_mux <- which(is.na(mu_x))
     if (!na.rm) {
       stop("Cannot compute the weights without ignoring NA/NaN ",
-           "values...\nTry setting 'na.rm' or na.rm_gsaseq' to 'TRUE' ",
-           "to ignore NA/NaN values, but think carefully about where ",
-           "does those NA/NaN come from...")
+        "values...\nTry setting 'na.rm' or na.rm_gsaseq' to 'TRUE' ",
+        "to ignore NA/NaN values, but think carefully about where ",
+        "does those NA/NaN come from...")
 
     } else if (length(na_mux) > 0) {
       mu_x_fit <- mu_x_fit[-na_mux]
@@ -339,43 +340,43 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
     }
 
     inf_lse <- which(is.infinite(lse_fit))
-    if(length(inf_lse) > 0){
+    if (length(inf_lse) > 0) {
       mu_x_fit <- mu_x_fit[-inf_lse]
       lse_fit <- lse_fit[-inf_lse]
     }
-    min_gridsize <- ceiling((max(mu_x_fit) - min(mu_x_fit))/(4*bw))+1
+    min_gridsize <- ceiling((max(mu_x_fit) - min(mu_x_fit)) / (4 * bw)) + 1
     gridsize <- max(min_gridsize, 401)
     smth <- KernSmooth::locpoly(x = c(mu_x_fit), y = c(lse_fit), degree = 2,
-                                kernel = kernel, bandwidth = bw, gridsize = gridsize)
+      kernel = kernel, bandwidth = bw, gridsize = gridsize)
     w <- exp(-stats::approx(x = reverse_trans(smth$x), y = smth$y,
-                            xout = reverse_trans(mu_x),
-                            rule = 2)$y)
+      xout = reverse_trans(mu_x),
+      rule = 2)$y)
     cnt <- 0
-    while(cnt < 5 && (anyNA(w) || sum(is.infinite(w)) > 0 )){
+    while (cnt < 5 && (anyNA(w) || sum(is.infinite(w)) > 0)) {
       cnt <- cnt + 1
-      bw <- 2*bw
-      min_gridsize <- ceiling((max(mu_x_fit) - min(mu_x_fit))/(4*bw))+1
+      bw <- 2 * bw
+      min_gridsize <- ceiling((max(mu_x_fit) - min(mu_x_fit)) / (4 * bw)) + 1
       gridsize <- max(min_gridsize, 401)
       smth <- KernSmooth::locpoly(x = c(mu_x_fit), y = c(lse_fit), drv = 1,
-                                  kernel = kernel, bandwidth = bw, gridsize = gridsize)
+        kernel = kernel, bandwidth = bw, gridsize = gridsize)
       w <- exp(-stats::approx(x = reverse_trans(smth$x), y = smth$y,
-                              xout = reverse_trans(mu_x),
-                              rule = 2)$y)
+        xout = reverse_trans(mu_x),
+        rule = 2)$y)
     }
     weights <- matrix(w, nrow(mu_x), ncol(mu_x))
   }
-  if(!anyNA(weights)){
-    if(sum(weights < 0) > 0){
+  if (!anyNA(weights)) {
+    if (sum(weights < 0) > 0) {
       stop("negative variance weights estimated")
     }
-  }else{
-    if(na.rm){
-      if(all.equal(which(is.na(weights)), which(is.na(y_lcpm)))){
+  } else {
+    if (na.rm) {
+      if (all.equal(which(is.na(weights)), which(is.na(y_lcpm)))) {
         weights[is.na(weights)] <- 1
-      }else{
+      } else {
         stop("NA variance weights estimated not matching NA in `y`")
       }
-    }else{
+    } else {
       stop("NA variance weights estimated while `na.rm`is FALSE")
     }
 
@@ -384,22 +385,21 @@ sp_weights <- function(y, x, phi = NULL, use_phi = TRUE, preprocessed = FALSE,
   rownames(weights) <- rownames(y_lcpm)
 
 
-  if(gene_based){
+  if (gene_based) {
     v_out <- v
     smth_out <- kern_fit
-  }else{
+  } else {
     v_out <- lse
     smth_out <- smth
   }
 
   return(list("weights" = t(weights),
-              "plot_utilities" = list("reverse_trans" = reverse_trans,
-                                      "method" = "loclin",
-                                      "smth" = smth_out,
-                                      "gene_based" = gene_based,
-                                      "mu" = mu_x,
-                                      "v" = v_out
-              )
+    "plot_utilities" = list("reverse_trans" = reverse_trans,
+      "method" = "loclin",
+      "smth" = smth_out,
+      "gene_based" = gene_based,
+      "mu" = mu_x,
+      "v" = v_out
+    )
   ))
 }
-

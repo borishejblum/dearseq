@@ -44,10 +44,10 @@ log(counts) per million.}
 gene-level. Default is \code{FALSE}, when weights will be estimated at the
 observation-level.}
 
-\item{log_scale_gene_weights}{a logical flag when \code{gene_based = TRUE}, 
-whether to smooth the variance estimator on the log scale before 
-exponentiation back, guaranteeing positive smoothed variances (unlike 
-smoothing on the raw scale, which can extrapolate to negative values). 
+\item{log_scale_gene_weights}{a logical flag when \code{gene_based = TRUE},
+whether to smooth the variance estimator on the log scale before
+exponentiation back, guaranteeing positive smoothed variances (unlike
+smoothing on the raw scale, which can extrapolate to negative values).
 Default is \code{TRUE}.}
 
 \item{bw}{a character string indicating the smoothing bandwidth selection
@@ -100,11 +100,15 @@ set.seed(123)
 G <- 10000
 n <- 12
 p <- 2
-y <- sapply(1:n, FUN = function(x){rnbinom(n = G, size = 0.07, mu = 200)})
+y <- sapply(1:n, FUN = function(x) {
+  rnbinom(n = G, size = 0.07, mu = 200)
+})
 
-x <- sapply(1:p, FUN = function(x){rnorm(n = n, mean = n, sd = 1)})
+x <- sapply(1:p, FUN = function(x) {
+  rnorm(n = n, mean = n, sd = 1)
+})
 
-w <- sp_weights(y, x, use_phi=FALSE, na.rm = TRUE)
+w <- sp_weights(y, x, use_phi = FALSE, na.rm = TRUE)
 
 }
 \seealso{

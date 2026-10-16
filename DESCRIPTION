@@ -2,8 +2,8 @@ Package: dearseq
 Type: Package
 Title: Differential Expression Analysis for RNA-seq data through a robust 
        variance component test
-Version: 1.20.2
-Date: 2025-03-06
+Version: 1.21.0
+Date: 2026-10-16
 Authors@R: c(person("Denis", "Agniel", role = c("aut"),
                     email = "denis.agniel@gmail.com"),
 	           person("Boris P.", "Hejblum", role = c("aut", "cre"),
@@ -14,7 +14,9 @@ Authors@R: c(person("Denis", "Agniel", role = c("aut"),
 	           person("Mélanie", "Huchon", role = c("ctb"),
 	                  email = "melanie.huchon@u-bordeaux.fr"),
 	           person("Iban", "Larrouture", role = c("ctb"),
-	                  email = "iban.larrouture@u-bordeaux.fr"))
+	                  email = "iban.larrouture@u-bordeaux.fr"),
+	           person("Quentin", "Laval", role = c("ctb"),
+	                  email = "quentin.laval@u-bordeaux.fr"))
 Depends: R (>= 3.6.0)
 Imports: 
     CompQuadForm,
@@ -58,8 +60,8 @@ biocViews: BiomedicalInformatics, CellBiology, DifferentialExpression, DNASeq,
 URL: https://borishejblum.github.io/dearseq/, https://bioconductor.org/packages/dearseq/
 BugReports: https://github.com/borishejblum/dearseq/issues
 Encoding: UTF-8
-RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,
     RcppEigen
+Config/roxygen2/version: 8.1.0

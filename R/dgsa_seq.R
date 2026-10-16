@@ -1,165 +1,165 @@
-#'Time-course Gene Set Analysis
+#' Time-course Gene Set Analysis
 #'
-#'Wrapper function for performing gene set analysis of (potentially
-#'longitudinal) RNA-seq data
+#' Wrapper function for performing gene set analysis of (potentially
+#' longitudinal) RNA-seq data
 #'
-#'@param exprmat a numeric matrix of size \code{G x n} containing the raw
-#'RNA-seq counts or preprocessed expressions from \code{n} samples for \code{G}
-#'genes. Default is \code{NULL}, in which case \code{object} must not be
-#'\code{NULL}.
+#' @param exprmat a numeric matrix of size \code{G x n} containing the raw
+#' RNA-seq counts or preprocessed expressions from \code{n} samples for \code{G}
+#' genes. Default is \code{NULL}, in which case \code{object} must not be
+#' \code{NULL}.
 #'
-#'@param object an object that can be either an
-#'\code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment}},
-#'an \code{\link[Biobase:class.ExpressionSet]{ExpressionSet}}, a
-#'\code{\link[DESeq2:DESeqDataSet]{DESeqDataSet}}, or a
-#'\code{\link[edgeR:DGEList]{DGEList}}.
-#'Default is \code{NULL}, in which case \code{exprmat} must not be
-#'\code{NULL}.
+#' @param object an object that can be either an
+#' \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment}},
+#' an \code{\link[Biobase:class.ExpressionSet]{ExpressionSet}}, a
+#' \code{\link[DESeq2:DESeqDataSet]{DESeqDataSet}}, or a
+#' \code{\link[edgeR:DGEList]{DGEList}}.
+#' Default is \code{NULL}, in which case \code{exprmat} must not be
+#' \code{NULL}.
 #'
-#'@param covariates \itemize{
-#'\item If \code{exprmat} is specified as a matrix:
-#'then \code{covariates} must be a numeric matrix of size \code{n x p}
-#'containing the model covariates for \code{n} samples (design matrix).
-#'Usually, its first column is the intercept (full of \code{1}s).
-#'\item If \code{object} is specified: then \code{covariates} must be a
-#'character vector of length \code{p} containing the colnames of the
-#'design matrix given in \code{object}.
-#'} If \code{covariates} is \code{NULL} (the default), then it is just the
-#'intercept.
+#' @param covariates \itemize{
+#' \item If \code{exprmat} is specified as a matrix:
+#' then \code{covariates} must be a numeric matrix of size \code{n x p}
+#' containing the model covariates for \code{n} samples (design matrix).
+#' Usually, its first column is the intercept (full of \code{1}s).
+#' \item If \code{object} is specified: then \code{covariates} must be a
+#' character vector of length \code{p} containing the colnames of the
+#' design matrix given in \code{object}.
+#' } If \code{covariates} is \code{NULL} (the default), then it is just the
+#' intercept.
 #'
-#'@param variables2test \itemize{
-#'\item If \code{exprmat} is specified as a matrix:
-#'a numeric design matrix of size \code{n x K} containing
-#'the \code{K} variables to be tested.
-#'\item If \code{object} is specified: then \code{variables2test} must be a
-#'character vector of length \code{K} containing the colnames of the
-#'design matrix given in \code{object}.
-#'}
+#' @param variables2test \itemize{
+#' \item If \code{exprmat} is specified as a matrix:
+#' a numeric design matrix of size \code{n x K} containing
+#' the \code{K} variables to be tested.
+#' \item If \code{object} is specified: then \code{variables2test} must be a
+#' character vector of length \code{K} containing the colnames of the
+#' design matrix given in \code{object}.
+#' }
 #'
-#'@param weights_var2test_condi a logical flag indicating whether
-#'heteroscedasticity weights computation should be conditional on both the
-#'variable(s) to be tested \code{phi} and on covariate(s) \code{x}, or on
-#'\code{x} alone.  Default is \code{TRUE} for the asymptotic test
-#'(in which case conditional means are estimated conditionally on both
-#'\code{variables2test} and \code{covariates}), and \code{FALSE} for the
-#'permutation test (in which case conditional means are estimated
-#'conditionally on only the  \code{covariates}).
+#' @param weights_var2test_condi a logical flag indicating whether
+#' heteroscedasticity weights computation should be conditional on both the
+#' variable(s) to be tested \code{phi} and on covariate(s) \code{x}, or on
+#' \code{x} alone.  Default is \code{TRUE} for the asymptotic test
+#' (in which case conditional means are estimated conditionally on both
+#' \code{variables2test} and \code{covariates}), and \code{FALSE} for the
+#' permutation test (in which case conditional means are estimated
+#' conditionally on only the  \code{covariates}).
 #'
-#'@param genesets Can be either:\itemize{
-#'\item a \code{vector}
-#'\item a \code{list}
-#'\item a \code{BiocSet} object
-#'}
-#'Can be a vector of index or subscripts that defines which
-#'rows of \code{y} constitute the investigated gene set (when only 1 gene
-#'set is being tested).
+#' @param genesets Can be either:\itemize{
+#' \item a \code{vector}
+#' \item a \code{list}
+#' \item a \code{BiocSet} object
+#' }
+#' Can be a vector of index or subscripts that defines which
+#' rows of \code{y} constitute the investigated gene set (when only 1 gene
+#' set is being tested).
 #'
-#'Can also be a \code{list} of index (or \code{rownames} of \code{y}) when
-#'several gene sets are tested at once, such as the first element of a
-#'\code{\link[GSA:GSA.read.gmt]{gmt}} object.
+#' Can also be a \code{list} of index (or \code{rownames} of \code{y}) when
+#' several gene sets are tested at once, such as the first element of a
+#' \code{\link[GSA:GSA.read.gmt]{gmt}} object.
 #'
-#'Finally, can also be a \code{\link[BiocSet:BiocSet-class]{BiocSet}} object
+#' Finally, can also be a \code{\link[BiocSet:BiocSet-class]{BiocSet}} object
 #'
-#'If \code{NULL}, then gene-wise p-values are returned.
+#' If \code{NULL}, then gene-wise p-values are returned.
 #'
-#'@param sample_group a vector of length \code{n} indicating whether the samples
-#'should be grouped (e.g. paired samples or longitudinal data). Coerced
-#'to be a \code{factor}. Default is \code{NULL} in which case no grouping is
-#'performed.
+#' @param sample_group a vector of length \code{n} indicating whether the samples
+#' should be grouped (e.g. paired samples or longitudinal data). Coerced
+#' to be a \code{factor}. Default is \code{NULL} in which case no grouping is
+#' performed.
 #'
-#'@param cov_variables2test_eff a matrix of size \code{K x K} containing the
-#'covariance matrix of the \code{K} random effects. Only used if
-#'\code{homogen_traj} is \code{FALSE}. Default assume diagonal correlation
-#'matrix, i.e. independence of random effects.
+#' @param cov_variables2test_eff a matrix of size \code{K x K} containing the
+#' covariance matrix of the \code{K} random effects. Only used if
+#' \code{homogen_traj} is \code{FALSE}. Default assume diagonal correlation
+#' matrix, i.e. independence of random effects.
 #'
-#'@param which_weights a character string indicating which method to use to
-#'estimate the mean-variance relationship weights. Possibilities are
-#'\code{'loclin'}, \code{'voom'} or \code{'none'} (in which case no weighting is
-#'performed). Default is \code{'loclin'}.
-#'See \code{\link{sp_weights}} and \code{\link{voom_weights}} for details.
+#' @param which_weights a character string indicating which method to use to
+#' estimate the mean-variance relationship weights. Possibilities are
+#' \code{'loclin'}, \code{'voom'} or \code{'none'} (in which case no weighting is
+#' performed). Default is \code{'loclin'}.
+#' See \code{\link{sp_weights}} and \code{\link{voom_weights}} for details.
 #'
-#'@param which_test a character string indicating which method to use to
-#'approximate the variance component score test, either \code{'permutation'} or
-#'\code{'asymptotic'}. Default is \code{'permutation'}.
+#' @param which_test a character string indicating which method to use to
+#' approximate the variance component score test, either \code{'permutation'} or
+#' \code{'asymptotic'}. Default is \code{'permutation'}.
 #'
-#'@param n_perm the number of perturbations. Default is \code{1000}.
+#' @param n_perm the number of perturbations. Default is \code{1000}.
 #'
-#'@param progressbar logical indicating wether a progressBar should be displayed
-#'when computing permutations (only in interactive mode).
+#' @param progressbar logical indicating wether a progressBar should be displayed
+#' when computing permutations (only in interactive mode).
 #'
-#'@param parallel_comp a logical flag indicating whether parallel computation
-#'should be enabled. Only Linux and MacOS are supported, this is ignored on
-#'Windows. Default is \code{TRUE}.
+#' @param parallel_comp a logical flag indicating whether parallel computation
+#' should be enabled. Only Linux and MacOS are supported, this is ignored on
+#' Windows. Default is \code{TRUE}.
 #'
-#'@param nb_cores an integer indicating the number of cores to be used when
-#'\code{parallel_comp} is \code{TRUE}.
-#'Default is \code{parallel::detectCores(logical=FALSE) - 1}.
+#' @param nb_cores an integer indicating the number of cores to be used when
+#' \code{parallel_comp} is \code{TRUE}.
+#' Default is \code{parallel::detectCores(logical=FALSE) - 1}.
 #'
-#'@param preprocessed a logical flag indicating whether the expression data have
-#'already been preprocessed (e.g. log2 transformed). Default is \code{FALSE}, in
-#'which case \code{y} is assumed to contain raw counts and is normalized into
-#'log(counts) per million.
+#' @param preprocessed a logical flag indicating whether the expression data have
+#' already been preprocessed (e.g. log2 transformed). Default is \code{FALSE}, in
+#' which case \code{y} is assumed to contain raw counts and is normalized into
+#' log(counts) per million.
 #'
-#'@param gene_based_weights a logical flag used for \code{'loclin'} weights,
-#'indicating whether to estimate weights at the gene-level, or rather at the
-#'observation-level. Default is \code{TRUE}, and weights are then estimated at
-#'the gene-level.
+#' @param gene_based_weights a logical flag used for \code{'loclin'} weights,
+#' indicating whether to estimate weights at the gene-level, or rather at the
+#' observation-level. Default is \code{TRUE}, and weights are then estimated at
+#' the gene-level.
 #'
-#'@param log_scale_gene_weights a logical flag when \code{gene_based_weights =
-#' TRUE}, whether to smooth the variance estimator on the log scale before 
-#'exponentiation back, guaranteeing positive smoothed variances (unlike 
-#'smoothing on the raw scale, which can extrapolate to negative values). 
-#'Default is \code{TRUE}.
+#' @param log_scale_gene_weights a logical flag when \code{gene_based_weights =
+#' TRUE}, whether to smooth the variance estimator on the log scale before
+#' exponentiation back, guaranteeing positive smoothed variances (unlike
+#' smoothing on the raw scale, which can extrapolate to negative values).
+#' Default is \code{TRUE}.
 #'
-#'@param bw a character string indicating the smoothing bandwidth selection
-#'method to use. See \code{\link[stats]{bandwidth}} for details. Possible values
+#' @param bw a character string indicating the smoothing bandwidth selection
+#' method to use. See \code{\link[stats]{bandwidth}} for details. Possible values
 #' are \code{'ucv'}, \code{'SJ'}, \code{'bcv'}, \code{'nrd'} or \code{'nrd0'}
 #'
-#'@param kernel a character string indicating which kernel should be used.
-#'Possibilities are \code{'gaussian'}, \code{'epanechnikov'},
-#'\code{'rectangular'}, \code{'triangular'}, \code{'biweight'},
-#'\code{'tricube'}, \code{'cosine'}, \code{'optcosine'}. Default is
-#'\code{'gaussian'} (NB: \code{'tricube'} kernel
-#'corresponds to the loess method).
+#' @param kernel a character string indicating which kernel should be used.
+#' Possibilities are \code{'gaussian'}, \code{'epanechnikov'},
+#' \code{'rectangular'}, \code{'triangular'}, \code{'biweight'},
+#' \code{'tricube'}, \code{'cosine'}, \code{'optcosine'}. Default is
+#' \code{'gaussian'} (NB: \code{'tricube'} kernel
+#' corresponds to the loess method).
 #'
-#'@param transform a logical flag used for \code{'loclin'} weights, indicating
-#'whether values should be transformed to uniform for the purpose of local
-#'linear smoothing. This may be helpful if tail observations are sparse and the
-#'specified bandwidth gives suboptimal performance there. Default is
-#'\code{TRUE}.
+#' @param transform a logical flag used for \code{'loclin'} weights, indicating
+#' whether values should be transformed to uniform for the purpose of local
+#' linear smoothing. This may be helpful if tail observations are sparse and the
+#' specified bandwidth gives suboptimal performance there. Default is
+#' \code{TRUE}.
 #'
-#'@param padjust_methods multiple testing correction method used if
-#'\code{genesets} is a list. Default is 'BH', i.e. Benjamini-Hochberg procedure
-#'for controlling the FDR. Other possibilities are: \code{'holm'},
-#'\code{'hochberg'}, \code{'hommel'}, \code{'bonferroni'} or \code{'BY'}
-#'(for Benjamini-Yekutieli procedure).
+#' @param padjust_methods multiple testing correction method used if
+#' \code{genesets} is a list. Default is 'BH', i.e. Benjamini-Hochberg procedure
+#' for controlling the FDR. Other possibilities are: \code{'holm'},
+#' \code{'hochberg'}, \code{'hommel'}, \code{'bonferroni'} or \code{'BY'}
+#' (for Benjamini-Yekutieli procedure).
 #'
-#'@param lowess_span smoother span for the lowess function, between 0 and 1.
-#'This gives the proportion of points in the plot which influence the smooth at
-#'each value. Larger values give more smoothness. Only used if
-#'\code{which_weights} is \code{'voom'}. Default is \code{0.5}.
+#' @param lowess_span smoother span for the lowess function, between 0 and 1.
+#' This gives the proportion of points in the plot which influence the smooth at
+#' each value. Larger values give more smoothness. Only used if
+#' \code{which_weights} is \code{'voom'}. Default is \code{0.5}.
 #'
-#'@param R library size (optional, important to provide if
-#'\code{preprocessed = TRUE}). Default is \code{NULL}
+#' @param R library size (optional, important to provide if
+#' \code{preprocessed = TRUE}). Default is \code{NULL}
 #'
-#'@param adaptive a logical flag indicating whether adaptive permutation should
-#'be performed. Default is \code{TRUE}
+#' @param adaptive a logical flag indicating whether adaptive permutation should
+#' be performed. Default is \code{TRUE}
 #'
-#'@param max_adaptive The maximum number of permutations considered.
-#'Default is \code{64000}
+#' @param max_adaptive The maximum number of permutations considered.
+#' Default is \code{64000}
 #'
-#'@param homogen_traj a logical flag indicating whether trajectories should be
-#'considered homogeneous. Default is \code{FALSE} in which case trajectories are
-#'not only tested for trend, but also for heterogeneity.
+#' @param homogen_traj a logical flag indicating whether trajectories should be
+#' considered homogeneous. Default is \code{FALSE} in which case trajectories are
+#' not only tested for trend, but also for heterogeneity.
 #'
-#'@param na.rm_gsaseq logical: should missing values in \code{y} (including
-#'\code{NA} and \code{NaN}) be omitted from the calculations?
-#'Default is \code{TRUE}.
+#' @param na.rm_gsaseq logical: should missing values in \code{y} (including
+#' \code{NA} and \code{NaN}) be omitted from the calculations?
+#' Default is \code{TRUE}.
 #'
-#'@param verbose logical: should informative messages be printed during the
-#'computation? Default is \code{TRUE}.
+#' @param verbose logical: should informative messages be printed during the
+#' computation? Default is \code{TRUE}.
 #'
-#'@return A list with the following elements:\itemize{
+#' @return A list with the following elements:\itemize{
 #'   \item \code{which_test}: a character string carrying forward the value of
 #'   the '\code{which_test}' argument indicating which test was perform (either
 #'   'asymptotic' or 'permutation').
@@ -181,83 +181,85 @@
 #'   '\code{adjPval}'.
 #' }
 #'
-#'@seealso \code{\link{sp_weights}} \code{\link{vc_test_perm}}
-#'\code{\link{vc_test_asym}} \code{\link{p.adjust}}
+#' @seealso \code{\link{sp_weights}} \code{\link{vc_test_perm}}
+#' \code{\link{vc_test_asym}} \code{\link{p.adjust}}
 #'
-#'@references Agniel D & Hejblum BP (2017). Variance component score test for
-#'time-course gene set analysis of longitudinal RNA-seq data,
-#'\emph{Biostatistics}, 18(4):589-604. \doi{doi:10.1093/biostatistics/kxx005}.
-#'\href{https://arxiv.org/abs/1605.02351}{arXiv:1605.02351}.
+#' @references Agniel D & Hejblum BP (2017). Variance component score test for
+#' time-course gene set analysis of longitudinal RNA-seq data,
+#' \emph{Biostatistics}, 18(4):589-604. \doi{doi:10.1093/biostatistics/kxx005}.
+#' \href{https://arxiv.org/abs/1605.02351}{arXiv:1605.02351}.
 #'
-#'@references Law, C. W., Chen, Y., Shi, W., & Smyth, G. K. (2014). voom:
-#'Precision weights unlock linear model analysis tools for RNA-seq read counts.
-#'\emph{Genome Biology}, 15(2), R29. \doi{doi:10.1186/gb-2014-15-2-r29}.
+#' @references Law, C. W., Chen, Y., Shi, W., & Smyth, G. K. (2014). voom:
+#' Precision weights unlock linear model analysis tools for RNA-seq read counts.
+#' \emph{Genome Biology}, 15(2), R29. \doi{doi:10.1186/gb-2014-15-2-r29}.
 #'
-#'@importFrom stats p.adjust as.formula model.matrix
-#'@importFrom matrixStats rowVars
-#'@importFrom methods is
+#' @importFrom stats p.adjust as.formula model.matrix
+#' @importFrom matrixStats rowVars
+#' @importFrom methods is
 #'
-#'@examples
+#' @examples
 #'
-#'nsims <- 2 #500
-#'res_quant <- list()
-#'for(i in 1:nsims){
-#'  n <- 3000
-#'  na <- 2
-#'  arm_size <- 25
-#'  nr <- 2
-#'  r <- na*arm_size*nr
-#'  t <- matrix(rep(1:nr), r/nr, ncol=1, nrow=r)
-#'  a <- matrix(rep(1:na), r/nr, ncol=1, nrow=r)
-#'  sigma <- 0.4
-#'  b0 <- 1
+#' nsims <- 2 # 500
+#' res_quant <- list()
+#' for (i in 1:nsims) {
+#'   n <- 3000
+#'   na <- 2
+#'   arm_size <- 25
+#'   nr <- 2
+#'   r <- na * arm_size * nr
+#'   t <- matrix(rep(1:nr), r / nr, ncol = 1, nrow = r)
+#'   a <- matrix(rep(1:na), r / nr, ncol = 1, nrow = r)
+#'   sigma <- 0.4
+#'   b0 <- 1
 #'
-#'  #under the null:
-#'  b1 <- 0
+#'   # under the null:
+#'   b1 <- 0
 #'
-#'  #under the alternative
-#'  #b1 <- 1
+#'   # under the alternative
+#'   # b1 <- 1
 #'
-#'  y.tilde <- b0 + b1*t + rnorm(r, sd = sigma)
-#'  y <- t(matrix(rnorm(n*r, sd = sqrt(sigma*abs(y.tilde))), ncol=n, nrow=r) +
-#'         matrix(rep(y.tilde, n), ncol=n, nrow=r))
-#'  x <- matrix(1, ncol=1, nrow=r)
+#'   y.tilde <- b0 + b1 * t + rnorm(r, sd = sigma)
+#'   y <- t(matrix(rnorm(n * r, sd = sqrt(sigma * abs(y.tilde))), ncol = n, nrow = r) +
+#'     matrix(rep(y.tilde, n), ncol = n, nrow = r))
+#'   x <- matrix(1, ncol = 1, nrow = r)
 #'
-#'  #run test
-#'  res <- dgsa_seq(exprmat = y, covariates = x, variables2test = t,
-#'                 genesets=lapply(0:99, function(x){x*30+(1:30)}),
-#'                 cov_variables2test_eff = matrix(1),
-#'                 sample_group = rep(1:(r/nr), each=nr),
-#'                 which_test='asymptotic',
-#'                 which_weights='none', preprocessed=TRUE)
-#'  length(res$pvals[, 'rawPval'])
-#'  quantile(res$pvals[, 'rawPval'])
+#'   # run test
+#'   res <- dgsa_seq(exprmat = y, covariates = x, variables2test = t,
+#'     genesets = lapply(0:99, function(x) {
+#'       x * 30 + (1:30)
+#'     }),
+#'     cov_variables2test_eff = matrix(1),
+#'     sample_group = rep(1:(r / nr), each = nr),
+#'     which_test = "asymptotic",
+#'     which_weights = "none", preprocessed = TRUE)
+#'   length(res$pvals[, "rawPval"])
+#'   quantile(res$pvals[, "rawPval"])
 #'
-#'  res_quant[[i]] <- res$pvals[, 'rawPval'] #res$pvals[, 'adjPval']
+#'   res_quant[[i]] <- res$pvals[, "rawPval"] # res$pvals[, 'adjPval']
 #'
-#'  cat(i, "/", nsims, "\n", sep="")
-#'}
-#'mean(unlist(res_quant)<0.05)
-#'qqplot(y = unlist(res_quant), x=runif(500), ylab="Raw p-values",
-#'       xlab = "Uniform distribution (expected under H0)")
-#'qqline(unlist(res_quant), distribution = qunif, col="red")
-#'#hist(unlist(res_quant)) #plot(density(unlist(res_quant)))
-#'#round(rowMeans(vapply(res_quant, FUN = quantile, FUN.VALUE = rep(1.1, 5))), 3)
+#'   cat(i, "/", nsims, "\n", sep = "")
+#' }
+#' mean(unlist(res_quant) < 0.05)
+#' qqplot(y = unlist(res_quant), x = runif(500), ylab = "Raw p-values",
+#'   xlab = "Uniform distribution (expected under H0)")
+#' qqline(unlist(res_quant), distribution = qunif, col = "red")
+#' # hist(unlist(res_quant)) #plot(density(unlist(res_quant)))
+#' # round(rowMeans(vapply(res_quant, FUN = quantile, FUN.VALUE = rep(1.1, 5))), 3)
 #'
 #'
-#'if(interactive()){
-#'res_genes <- dgsa_seq(exprmat = y, covariates = x, variables2test = t,
-#'                     genesets = NULL,
-#'                     cov_variables2test_eff = matrix(1),
-#'                     sample_group = rep(1:(r/nr), each=nr),
-#'                     which_test = 'permutation',
-#'                     which_weights = 'none', preprocessed = TRUE,
-#'                     n_perm = 1000, parallel_comp = FALSE)
+#' if (interactive()) {
+#'   res_genes <- dgsa_seq(exprmat = y, covariates = x, variables2test = t,
+#'     genesets = NULL,
+#'     cov_variables2test_eff = matrix(1),
+#'     sample_group = rep(1:(r / nr), each = nr),
+#'     which_test = "permutation",
+#'     which_weights = "none", preprocessed = TRUE,
+#'     n_perm = 1000, parallel_comp = FALSE)
 #'
-#'mean(res_genes$pvals$rawPval < 0.05)
-#'summary(res_genes$pvals$rawPval)
-#'}
-#'@export
+#'   mean(res_genes$pvals$rawPval < 0.05)
+#'   summary(res_genes$pvals$rawPval)
+#' }
+#' @export
 dgsa_seq <- function(exprmat = NULL, object = NULL,
                      covariates = NULL,
                      variables2test,
@@ -268,122 +270,121 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
                      which_test = c("permutation", "asymptotic"),
                      which_weights = c("loclin", "voom", "none"),
                      n_perm = 1000, progressbar = TRUE, parallel_comp = TRUE,
-                     nb_cores = parallel::detectCores(logical=FALSE) - 1,
+                     nb_cores = parallel::detectCores(logical = FALSE) - 1,
                      preprocessed = FALSE,
                      gene_based_weights = TRUE,
                      log_scale_gene_weights = TRUE,
                      bw = "nrd",
                      kernel = c("gaussian", "epanechnikov", "rectangular",
-                                "triangular", "biweight", "tricube", "cosine",
-                                "optcosine"),
+                       "triangular", "biweight", "tricube", "cosine",
+                       "optcosine"),
                      transform = TRUE,
                      padjust_methods = c("BH", "BY", "holm", "hochberg",
-                                         "hommel", "bonferroni"),
+                       "hommel", "bonferroni"),
                      lowess_span = 0.5,
-                     R=NULL,
+                     R = NULL,
                      adaptive = TRUE, max_adaptive = 64000,
                      homogen_traj = FALSE,
                      na.rm_gsaseq = TRUE,
                      verbose = TRUE) {
-
   # Setting unspecified args to their defaults
-  if(length(which_test) > 1){
+  if (length(which_test) > 1) {
     which_test <- which_test[1]
   }
-  if(length(weights_var2test_condi) > 1){
+  if (length(weights_var2test_condi) > 1) {
     weights_var2test_condi <- (which_test != "permutation")
   }
-  if(length(which_weights) > 1){
+  if (length(which_weights) > 1) {
     which_weights <- which_weights[1]
   }
-  if(length(padjust_methods) > 1){
+  if (length(padjust_methods) > 1) {
     padjust_methods <- padjust_methods[1]
   }
-  if(length(kernel) > 1){
+  if (length(kernel) > 1) {
     kernel <- kernel[1]
   }
 
-  if(weights_var2test_condi & which_test == "permutation"){
-      warning("`weights_var2test_condi` must be FALSE for the ",
-              "permutation test, as `phi` gets permuted.")
-      weights_var2test_condi <- FALSE
-      message("Setting `weights_var2test_condi` to FALSE ",
-              "with the permutation test.")
+  if (weights_var2test_condi & which_test == "permutation") {
+    warning("`weights_var2test_condi` must be FALSE for the ",
+      "permutation test, as `phi` gets permuted.")
+    weights_var2test_condi <- FALSE
+    message("Setting `weights_var2test_condi` to FALSE ",
+      "with the permutation test.")
   }
 
-  if(!is.null(object) & !is.null(exprmat)){
+  if (!is.null(object) & !is.null(exprmat)) {
     stop("only one of 'object' or 'exprmat' should be specified")
   }
-  if(is.null(object) & is.null(exprmat)){
+  if (is.null(object) & is.null(exprmat)) {
     stop("One of either 'object' or 'exprmat' should be specified")
   }
   stopifnot(!is.null(variables2test))
 
-  if(!is.null(object)){
+  if (!is.null(object)) {
 
     stopifnot(is.character(covariates) | is.null(covariates))
     stopifnot(is.character(variables2test))
 
-    if(is(object, "DGEList")){
+    if (is(object, "DGEList")) {
       stopifnot(!is.null(object$samples))
-      stopifnot(nrow(object$samples)==ncol(object$counts))
+      stopifnot(nrow(object$samples) == ncol(object$counts))
       y <- object$counts
       design_df <- as.data.frame(object$samples[, c(covariates,
-                                                    variables2test),
-                                                drop=FALSE])
-    }else if(is(object, "DESeqDataSet")){
-      if(!requireNamespace("DESeq2", quietly = TRUE)){
+        variables2test),
+      drop = FALSE])
+    } else if (is(object, "DESeqDataSet")) {
+      if (!requireNamespace("DESeq2", quietly = TRUE)) {
         stop("DESeq2 package required but is not available")
       }
-      if(!requireNamespace("SummarizedExperiment", quietly = TRUE)){
+      if (!requireNamespace("SummarizedExperiment", quietly = TRUE)) {
         stop("SummarizedExperiment package required but not available")
       }
       stopifnot(!is.null(SummarizedExperiment::colData(object)))
       stopifnot(nrow(SummarizedExperiment::colData(object)) ==
-                  ncol(DESeq2::counts(object)))
+        ncol(DESeq2::counts(object)))
       y <- DESeq2::counts(object)
-      design_df <- as.data.frame(SummarizedExperiment::colData(object)[, c(covariates, variables2test), drop=FALSE])
-    }else if(is(object, "ExpressionSet")){
-      if(!requireNamespace("Biobase",quietly=TRUE)){
+      design_df <- as.data.frame(SummarizedExperiment::colData(object)[, c(covariates, variables2test), drop = FALSE])
+    } else if (is(object, "ExpressionSet")) {
+      if (!requireNamespace("Biobase", quietly = TRUE)) {
         stop("Biobase package required but not available")
       }
       stopifnot(!is.null(Biobase::phenoData(object)))
       stopifnot(nrow(Biobase::phenoData(object)) ==
-                  ncol(Biobase::exprs(object)))
+        ncol(Biobase::exprs(object)))
       y <- Biobase::exprs(object)
-      design_df <- as.data.frame(Biobase::phenoData(object)[, c(covariates, variables2test), drop=FALSE])
-    }else if(is(object, "SummarizedExperiment")){
-      #Note: DESeqDataSet are SummarizedExperiments
-      if(!requireNamespace("SummarizedExperiment", quietly = TRUE)){
+      design_df <- as.data.frame(Biobase::phenoData(object)[, c(covariates, variables2test), drop = FALSE])
+    } else if (is(object, "SummarizedExperiment")) {
+      # Note: DESeqDataSet are SummarizedExperiments
+      if (!requireNamespace("SummarizedExperiment", quietly = TRUE)) {
         stop("SummarizedExperiment package required but is not available")
       }
       y <- SummarizedExperiment::assay(object)
-      design_df <- as.data.frame(SummarizedExperiment::colData(object)[, c(covariates, variables2test), drop=FALSE])
-    }else{
+      design_df <- as.data.frame(SummarizedExperiment::colData(object)[, c(covariates, variables2test), drop = FALSE])
+    } else {
       stop("'object' is neither a 'DGEList', nor a 'DESeqDataSet',",
-           "nor an 'ExpressionSet'.\n",
-           "Consider specifying 'exprmat' as a matrix instead...")
+        "nor an 'ExpressionSet'.\n",
+        "Consider specifying 'exprmat' as a matrix instead...")
     }
 
     variables2test_formula <- stats::as.formula(paste0("~ 1 + ",
-                                                       variables2test,
-                                                       collapse=" + "))
-    if(is.null(covariates)){
+      variables2test,
+      collapse = " + "))
+    if (is.null(covariates)) {
       covariates_formula <- stats::as.formula("~1")
-    }else{
+    } else {
       covariates_formula <- stats::as.formula(paste0("~ 1 + ",
-                                                     covariates,
-                                                     collapse=" + "))
+        covariates,
+        collapse = " + "))
     }
 
     x <- stats::model.matrix(covariates_formula,
-                             data = droplevels(design_df))
+      data = droplevels(design_df))
     phi <- stats::model.matrix(variables2test_formula,
-                               data = droplevels(design_df))[, -1,
-                                                             drop=FALSE]
-  }else{
-    if(is.null(covariates)){
-      covariates <- matrix(1, ncol=1, nrow=nrow(variables2test))
+      data = droplevels(design_df))[, -1,
+      drop = FALSE]
+  } else {
+    if (is.null(covariates)) {
+      covariates <- matrix(1, ncol = 1, nrow = nrow(variables2test))
     }
     y <- exprmat
     x <- covariates
@@ -396,32 +397,32 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
 
   if (na.rm_gsaseq && anyNA(y)) {
     warning("'y' contains ", sum(is.na(y)), " `NA` values. ",
-            "Currently they are ignored in the computations but ",
-            "you should think carefully about where do those NA/NaN ",
-            "come from... If you want to carry over those NA/NaN ",
-            "values in the results, set the `na.rm_gsaseq` argument to 'FALSE' ",
-            "(this has not been fully tested ",
-            "and should be used with extreme care).")
+      "Currently they are ignored in the computations but ",
+      "you should think carefully about where do those NA/NaN ",
+      "come from... If you want to carry over those NA/NaN ",
+      "values in the results, set the `na.rm_gsaseq` argument to 'FALSE' ",
+      "(this has not been fully tested ",
+      "and should be used with extreme care).")
   }
 
-  if(is.null(cov_variables2test_eff)){
+  if (is.null(cov_variables2test_eff)) {
     cov_variables2test_eff <- diag(ncol(phi))
   }
 
   # checking for 0 variance genes
   v_g <- matrixStats::rowVars(y, na.rm = TRUE)
-  if(sum(v_g == 0) > 0){
+  if (sum(v_g == 0) > 0) {
     warning("Removing ", sum(v_g == 0), " genes with 0 variance from ",
-            "the testing procedure.\n",
-            "  !! Those genes should probably have been removed ",
-            "beforehand...")
-    y <- y[v_g>0, ]
+      "the testing procedure.\n",
+      "  !! Those genes should probably have been removed ",
+      "beforehand...")
+    y <- y[v_g > 0, ]
   }
 
   # normalization if needed
   if (!preprocessed) {
     y_lcpm <- apply(y, MARGIN = 2, function(v) {
-      log2((v + 0.5)/(sum(v, na.rm = TRUE) + 1) * 10^6)
+      log2((v + 0.5) / (sum(v, na.rm = TRUE) + 1) * 10^6)
     })
   } else {
     y_lcpm <- y
@@ -429,28 +430,28 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
 
   if (is.data.frame(x)) {
     message("'x' is a data.frame -> converted to a matrix: ",
-            "\n all variables (including factors) are converted ",
-            "to numeric...")
+      "\n all variables (including factors) are converted ",
+      "to numeric...")
     x <- as.matrix(as.data.frame(lapply(x, as.numeric)))
   }
 
   if (is.data.frame(phi)) {
     message("'phi' is a data.frame -> converted to a matrix: ",
-            "\n all variables (including factors) are ",
-            "converted to numeric... ")
+      "\n all variables (including factors) are ",
+      "converted to numeric... ")
     phi <- as.matrix(as.data.frame(lapply(phi, as.numeric)))
   }
 
   if (det(crossprod(cbind(x, phi))) == 0) {
     stop("crossprod(cbind(x, phi)) cannot be inversed. 'x' and ",
-         "'phi' are likely colinear...")
+      "'phi' are likely colinear...")
   }
 
   if (length(padjust_methods) > 1) {
     padjust_methods <- padjust_methods[1]
   }
   stopifnot(padjust_methods %in% c("BH", "BY", "holm", "hochberg",
-                                   "hommel", "bonferroni"))
+    "hommel", "bonferroni"))
 
   if (length(which_weights) > 1) {
     which_weights <- which_weights[1]
@@ -466,32 +467,33 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
   if (which_test == "asymptotic") {
     n_perm <- NA
 
-    if (nrow(x) < 10)
+    if (nrow(x) < 10) {
       warning("Less than 10 samples: asymptotics likely not ",
-              "reached\nYou should probably run permutation test ",
-              "instead...")
+        "reached\nYou should probably run permutation test ",
+        "instead...")
+    }
   }
 
 
 
   if (which_test == "permutation") {
     if (is.null(sample_group)) {
-      #suppressWarnings(
+      # suppressWarnings(
       N_possible_perms <- factorial(ncol(y_lcpm))
-      #)
+      # )
     } else {
       # suppressWarnings(
       N_possible_perms <- prod(vapply(table(sample_group), factorial,
-                                      FUN.VALUE = 1))
-      #)
+        FUN.VALUE = 1))
+      # )
     }
 
     if (n_perm > N_possible_perms) {
       warning("The number of permutations requested 'n_perm' is ",
-              n_perm, "which is larger than the total number of ",
-              "existing permutations ", N_possible_perms,
-              ". Try a lower number for 'n_perm' (currently ",
-              "running with 'nperm=", N_possible_perms, "').")
+        n_perm, "which is larger than the total number of ",
+        "existing permutations ", N_possible_perms,
+        ". Try a lower number for 'n_perm' (currently ",
+        "running with 'nperm=", N_possible_perms, "').")
       n_perm <- N_possible_perms
     }
   }
@@ -503,29 +505,29 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
     message("Computing the weights... ")
   }
   w_full <- switch(which_weights,
-                   loclin = sp_weights(y = y_lcpm, x = x, phi = phi,
-                                       use_phi = weights_var2test_condi,
-                                       preprocessed = TRUE,
-                                       gene_based = gene_based_weights,
-                                       log_scale_gene_weights = log_scale_gene_weights,
-                                       bw = bw, kernel = kernel,
-                                       transform = transform,
-                                       verbose = verbose,
-                                       na.rm = na.rm_gsaseq),
-                   voom = voom_weights(y = y_lcpm,
-                                       x = if(weights_var2test_condi) {
-                                         cbind(x, phi)
-                                       } else {
-                                         x
-                                       }, preprocessed = TRUE,
-                                       lowess_span = lowess_span,
-                                       R = R),
-                   none = list(
-                     "weights" = matrix(1, ncol = ncol(y_lcpm),
-                                        nrow = nrow(y_lcpm),
-                                        dimnames = list(rownames(y_lcpm),
-                                                        colnames(y_lcpm))),
-                     "plot_utilities" = list("method" = "none"))
+    loclin = sp_weights(y = y_lcpm, x = x, phi = phi,
+      use_phi = weights_var2test_condi,
+      preprocessed = TRUE,
+      gene_based = gene_based_weights,
+      log_scale_gene_weights = log_scale_gene_weights,
+      bw = bw, kernel = kernel,
+      transform = transform,
+      verbose = verbose,
+      na.rm = na.rm_gsaseq),
+    voom = voom_weights(y = y_lcpm,
+      x = if (weights_var2test_condi) {
+        cbind(x, phi)
+      } else {
+        x
+      }, preprocessed = TRUE,
+      lowess_span = lowess_span,
+      R = R),
+    none = list(
+      "weights" = matrix(1, ncol = ncol(y_lcpm),
+        nrow = nrow(y_lcpm),
+        dimnames = list(rownames(y_lcpm),
+          colnames(y_lcpm))),
+      "plot_utilities" = list("method" = "none"))
   )
   if (which_weights != "none" & verbose) {
     message("Done!\n")
@@ -536,18 +538,18 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
   if (is.null(genesets)) {
     if (verbose) {
       message("'genesets' argument not provided => only gene-wise ",
-              "p-values are computed\n")
+        "p-values are computed\n")
     }
     if (which_test == "asymptotic") {
       if (is.null(sample_group)) {
         sample_group <- seq_len(nrow(x))
       }
       rawPvals <- vc_test_asym(y = y_lcpm, x = x, indiv = sample_group,
-                               phi = phi, w = w,
-                               Sigma_xi = cov_variables2test_eff,
-                               genewise_pvals = TRUE,
-                               homogen_traj = homogen_traj,
-                               na.rm = na.rm_gsaseq)$gene_pvals
+        phi = phi, w = w,
+        Sigma_xi = cov_variables2test_eff,
+        genewise_pvals = TRUE,
+        homogen_traj = homogen_traj,
+        na.rm = na.rm_gsaseq)$gene_pvals
     } else if (which_test == "permutation") {
       if (is.null(sample_group)) {
         sample_group <- rep(1, nrow(x))
@@ -558,42 +560,42 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
         y_lcpm0 <- y_lcpm
         y_lcpm0[is.na(y_lcpm0)] <- 0
         y_lcpm_res <- y_lcpm - t(x %*% solve(crossprod(x)) %*% t(x) %*%
-                                   t(y_lcpm0))
+          t(y_lcpm0))
       } else {
         y_lcpm_res <- y_lcpm - t(x %*% solve(crossprod(x)) %*% t(x) %*%
-                                   t(y_lcpm))
+          t(y_lcpm))
       }
       x_res <- matrix(1, nrow = nrow(x), ncol = 1)
       perm_result <- vc_test_perm(y = y_lcpm_res, x = x_res,
-                                  indiv = sample_group, phi = phi, w = w,
-                                  Sigma_xi = cov_variables2test_eff,
-                                  n_perm = n_perm,
-                                  progressbar = progressbar,
-                                  parallel_comp = parallel_comp,
-                                  nb_cores = nb_cores,
-                                  genewise_pvals = TRUE,
-                                  adaptive = adaptive,
-                                  max_adaptive = max_adaptive,
-                                  homogen_traj = homogen_traj,
-                                  na.rm = na.rm_gsaseq)
+        indiv = sample_group, phi = phi, w = w,
+        Sigma_xi = cov_variables2test_eff,
+        n_perm = n_perm,
+        progressbar = progressbar,
+        parallel_comp = parallel_comp,
+        nb_cores = nb_cores,
+        genewise_pvals = TRUE,
+        adaptive = adaptive,
+        max_adaptive = max_adaptive,
+        homogen_traj = homogen_traj,
+        na.rm = na.rm_gsaseq)
       rawPvals <- perm_result$gene_pvals
     }
 
     pvals <- data.frame(rawPval = rawPvals,
-                        adjPval = stats::p.adjust(rawPvals, padjust_methods)
+      adjPval = stats::p.adjust(rawPvals, padjust_methods)
     )
 
     if (!is.null(rownames(y_lcpm))) {
       rownames(pvals) <- rownames(y_lcpm)
     }
   } else {
-    if(is(genesets, "BiocSet")){
+    if (is(genesets, "BiocSet")) {
       genesets <- BiocSet::es_elementset(genesets)
       genesets_names <- unique(genesets$set)
       genesets <- lapply(X  = unique(genesets$set),
-                         FUN = function(x){
-                           genesets[genesets$set == x,]$element
-                         }
+        FUN = function(x) {
+          genesets[genesets$set == x, ]$element
+        }
       )
       names(genesets) <- genesets_names
 
@@ -601,22 +603,22 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
     if (!is.list(genesets)) {
       if (!is.vector(genesets)) {
         stop("'genesets' argument provided but is neither a list ",
-             ", a vector, nor a BiocSet object")
+          ", a vector, nor a BiocSet object")
       }
 
       if (is(genesets, "character")) {
         if (is.null(rownames(y_lcpm))) {
           stop("Gene sets specified as character but no rownames",
-               "available for the expression matrix")
+            "available for the expression matrix")
         }
         gene_names_measured <- rownames(y_lcpm)
         if ((length(intersect(genesets,
-                              gene_names_measured))/length(x)) != 1) {
+          gene_names_measured)) / length(genesets)) != 1) {
           message("Some transcripts in the investigated gene set ",
-                  "were not measured:\n-> automatically removing ",
-                  "those transcripts from the gene set definition")
+            "were not measured:\n-> automatically removing ",
+            "those transcripts from the gene set definition")
           genesets <- genesets[which(genesets %in%
-                                       gene_names_measured)]
+            gene_names_measured)]
         }
       }
       padjust_methods <- NA
@@ -626,16 +628,16 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
     if (is(genesets[[1]], "character")) {
       if (is.null(rownames(y_lcpm))) {
         stop("Gene sets specified as character but no rownames ",
-             "available for the expression matrix")
+          "available for the expression matrix")
       }
       gene_names_measured <- rownames(y_lcpm)
       prop_meas <- vapply(genesets, function(x) {
-        length(intersect(x, gene_names_measured))/length(x)
+        length(intersect(x, gene_names_measured)) / length(x)
       }, FUN.VALUE = 1)
       if (sum(prop_meas, na.rm = TRUE) != length(prop_meas)) {
         warning("Some transcripts in the investigated gene sets were ",
-                "not measured:\nremoving those transcripts from the ",
-                "gene set definition...")
+          "not measured:\nremoving those transcripts from the ",
+          "gene set definition...")
         genesets <- lapply(genesets, function(x) {
           x[which(x %in% gene_names_measured)]
         })
@@ -649,20 +651,22 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
       rawPvals <- vapply(seq_along(genesets), FUN = function(i_gs) {
         gs <- genesets[[i_gs]]
         e <- tryCatch(y_lcpm[gs, 1, drop = FALSE],
-                      error=function(cond){return(NULL)})
+          error = function(cond) {
+            return(NULL)
+          })
         if (length(e) < 1) {
           warning("Gene set ", i_gs, " contains 0 measured ",
-                  "transcript: associated p-value cannot ",
-                  "be computed")
+            "transcript: associated p-value cannot ",
+            "be computed")
           NA
         } else {
           vc_test_asym(y = y_lcpm[gs, , drop = FALSE], x = x,
-                       indiv = sample_group, phi = phi,
-                       w = w[gs, , drop = FALSE],
-                       Sigma_xi = cov_variables2test_eff,
-                       genewise_pvals = FALSE,
-                       homogen_traj = homogen_traj,
-                       na.rm = na.rm_gsaseq
+            indiv = sample_group, phi = phi,
+            w = w[gs, , drop = FALSE],
+            Sigma_xi = cov_variables2test_eff,
+            genewise_pvals = FALSE,
+            homogen_traj = homogen_traj,
+            na.rm = na.rm_gsaseq
           )$set_pval
         }
       }, FUN.VALUE = 0.5)
@@ -675,49 +679,51 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
         y_lcpm0 <- y_lcpm
         y_lcpm0[is.na(y_lcpm0)] <- 0
         y_lcpm_res <- y_lcpm - t(x %*% solve(crossprod(x)) %*% t(x) %*%
-                                   t(y_lcpm0))
+          t(y_lcpm0))
       } else {
         y_lcpm_res <- y_lcpm - t(x %*% solve(crossprod(x)) %*% t(x) %*%
-                                   t(y_lcpm))
+          t(y_lcpm))
       }
 
       x_res <- matrix(1, nrow = nrow(x), ncol = 1)
       rawPvals <- vapply(seq_along(genesets), FUN = function(i_gs) {
         gs <- genesets[[i_gs]]
         e <- tryCatch(y_lcpm[gs, 1, drop = FALSE],
-                      error=function(cond){return(NULL)})
+          error = function(cond) {
+            return(NULL)
+          })
         if (length(e) < 1) {
           warning("Gene set ", i_gs, " contains 0 measured ",
-                  "transcript: associated p-value cannot be computed")
+            "transcript: associated p-value cannot be computed")
           NA
         } else {
-          if(verbose){
+          if (verbose) {
             message("Analyzing gene set ", i_gs)
           }
           vc_test_perm(y = y_lcpm[gs, , drop = FALSE], x = x,
-                       indiv = sample_group,
-                       phi = phi, w = w[gs, , drop = FALSE],
-                       Sigma_xi = cov_variables2test_eff,
-                       n_perm = n_perm,
-                       progressbar = progressbar,
-                       parallel_comp = parallel_comp,
-                       nb_cores = nb_cores,
-                       genewise_pvals = FALSE,
-                       adaptive = adaptive,
-                       max_adaptive = max_adaptive,
-                       homogen_traj = homogen_traj,
-                       na.rm = na.rm_gsaseq
+            indiv = sample_group,
+            phi = phi, w = w[gs, , drop = FALSE],
+            Sigma_xi = cov_variables2test_eff,
+            n_perm = n_perm,
+            progressbar = progressbar,
+            parallel_comp = parallel_comp,
+            nb_cores = nb_cores,
+            genewise_pvals = FALSE,
+            adaptive = adaptive,
+            max_adaptive = max_adaptive,
+            homogen_traj = homogen_traj,
+            na.rm = na.rm_gsaseq
           )$set_pval
         }
       }, FUN.VALUE = 0.5)
     }
 
-    if(!is.na(padjust_methods)){
+    if (!is.na(padjust_methods)) {
       pvals <- data.frame(rawPval = rawPvals,
-                          adjPval = stats::p.adjust(rawPvals,
-                                                    padjust_methods)
+        adjPval = stats::p.adjust(rawPvals,
+          padjust_methods)
       )
-    }else{
+    } else {
       pvals <- data.frame(rawPval = rawPvals, adjPval = NA)
     }
     if (!is.null(names(genesets))) {
@@ -725,20 +731,23 @@ dgsa_seq <- function(exprmat = NULL, object = NULL,
     }
 
   }
-  if(is.null(genesets)){
+  if (is.null(genesets)) {
     ans_final <- list(which_test = which_test, preprocessed = preprocessed,
-                      n_perm = n_perm, pvals = pvals, precision_weights = w,
-                      weight_object = w_full
+      n_perm = n_perm, pvals = pvals, precision_weights = w,
+      weight_object = w_full
     )
-  }else{
+  } else {
     ans_final <- list(which_test = which_test, preprocessed = preprocessed,
-                      n_perm = n_perm, genesets = genesets, pvals = pvals,
-                      precision_weights = lapply(genesets,
-                                                 FUN = function(gs){tryCatch(w[gs, , drop = FALSE],
-                                                                             error=function(cond){return(NA)})
-                                                 }
-                      ),
-                      weight_object = w_full
+      n_perm = n_perm, genesets = genesets, pvals = pvals,
+      precision_weights = lapply(genesets,
+        FUN = function(gs) {
+          tryCatch(w[gs, , drop = FALSE],
+            error = function(cond) {
+              return(NA)
+            })
+        }
+      ),
+      weight_object = w_full
     )
   }
 

@@ -25,42 +25,52 @@ import(viridisLite)
 importFrom(CompQuadForm,davies)
 importFrom(KernSmooth,locpoly)
 importFrom(Rcpp,sourceCpp)
-importFrom(dplyr,filter)
-importFrom(dplyr,left_join)
+importFrom(dplyr,
+  filter,
+  left_join
+)
 importFrom(magrittr,"%>%")
-importFrom(matrixStats,colVars)
-importFrom(matrixStats,rowVars)
+importFrom(matrixStats,
+  colVars,
+  rowVars
+)
 importFrom(methods,is)
-importFrom(parallel,detectCores)
-importFrom(parallel,makeCluster)
-importFrom(parallel,mclapply)
-importFrom(parallel,stopCluster)
-importFrom(pbapply,pboptions)
-importFrom(pbapply,pbsapply)
+importFrom(parallel,
+  detectCores,
+  makeCluster,
+  mclapply,
+  stopCluster
+)
+importFrom(pbapply,
+  pboptions,
+  pbsapply
+)
 importFrom(reshape2,melt)
 importFrom(rlang,eval_tidy)
 importFrom(scattermore,geom_scattermore)
 importFrom(statmod,gauss.quad.prob)
-importFrom(stats,approx)
-importFrom(stats,approxfun)
-importFrom(stats,as.formula)
-importFrom(stats,bw.SJ)
-importFrom(stats,bw.bcv)
-importFrom(stats,bw.nrd)
-importFrom(stats,bw.nrd0)
-importFrom(stats,bw.ucv)
-importFrom(stats,cov)
-importFrom(stats,dnorm)
-importFrom(stats,lowess)
-importFrom(stats,median)
-importFrom(stats,model.matrix)
-importFrom(stats,na.omit)
-importFrom(stats,p.adjust)
-importFrom(stats,pbinom)
-importFrom(stats,pchisq)
-importFrom(stats,pnorm)
-importFrom(stats,qnorm)
-importFrom(stats,sd)
+importFrom(stats,
+  approx,
+  approxfun,
+  as.formula,
+  bw.SJ,
+  bw.bcv,
+  bw.nrd,
+  bw.nrd0,
+  bw.ucv,
+  cov,
+  dnorm,
+  lowess,
+  median,
+  model.matrix,
+  na.omit,
+  p.adjust,
+  pbinom,
+  pchisq,
+  pnorm,
+  qnorm,
+  sd
+)
 importFrom(survey,pchisqsum)
 importFrom(tibble,rownames_to_column)
 useDynLib(dearseq, .registration = TRUE)
