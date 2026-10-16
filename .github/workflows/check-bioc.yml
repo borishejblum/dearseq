@@ -40,7 +40,7 @@ env:
   has_RUnit: 'false'
   cache-version: 'cache-v2'
   run_docker: 'false'
-  bioc_version: 'bioc-devel'
+  bioc_version: 'bioc-release'
   ## Valid options are:
   ##    "bioc-release"
   ##    "bioc-devel"
@@ -223,7 +223,6 @@ jobs:
         shell: Rscript {0}
 
       - name: Install BiocGenerics
-        if:  env.has_RUnit == 'true'
         run: |
           ## Install BiocGenerics
           BiocManager::install("BiocGenerics")
