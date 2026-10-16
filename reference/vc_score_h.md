@@ -120,5 +120,5 @@ scoreTest_heterogen <- vc_test_asym(y, x, phi=tim, indiv=rep(1:nindiv,
                                    Sigma_xi=cov(tim),
                                    homogen_traj = FALSE)
 scoreTest_heterogen$set_pval
-#> [1] 0.4607837
+#> [1] 0.4607834
 ```

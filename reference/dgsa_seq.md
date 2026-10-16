@@ -300,66 +300,68 @@ weights unlock linear model analysis tools for RNA-seq read counts.
 
 ``` r
 
-nsims <- 2 #500
+nsims <- 2 # 500
 res_quant <- list()
-for(i in 1:nsims){
- n <- 3000
- na <- 2
- arm_size <- 25
- nr <- 2
- r <- na*arm_size*nr
- t <- matrix(rep(1:nr), r/nr, ncol=1, nrow=r)
- a <- matrix(rep(1:na), r/nr, ncol=1, nrow=r)
- sigma <- 0.4
- b0 <- 1
+for (i in 1:nsims) {
+  n <- 3000
+  na <- 2
+  arm_size <- 25
+  nr <- 2
+  r <- na * arm_size * nr
+  t <- matrix(rep(1:nr), r / nr, ncol = 1, nrow = r)
+  a <- matrix(rep(1:na), r / nr, ncol = 1, nrow = r)
+  sigma <- 0.4
+  b0 <- 1
 
- #under the null:
- b1 <- 0
+  # under the null:
+  b1 <- 0
 
- #under the alternative
- #b1 <- 1
+  # under the alternative
+  # b1 <- 1
 
- y.tilde <- b0 + b1*t + rnorm(r, sd = sigma)
- y <- t(matrix(rnorm(n*r, sd = sqrt(sigma*abs(y.tilde))), ncol=n, nrow=r) +
-        matrix(rep(y.tilde, n), ncol=n, nrow=r))
- x <- matrix(1, ncol=1, nrow=r)
+  y.tilde <- b0 + b1 * t + rnorm(r, sd = sigma)
+  y <- t(matrix(rnorm(n * r, sd = sqrt(sigma * abs(y.tilde))), ncol = n, nrow = r) +
+    matrix(rep(y.tilde, n), ncol = n, nrow = r))
+  x <- matrix(1, ncol = 1, nrow = r)
 
- #run test
- res <- dgsa_seq(exprmat = y, covariates = x, variables2test = t,
-                genesets=lapply(0:99, function(x){x*30+(1:30)}),
-                cov_variables2test_eff = matrix(1),
-                sample_group = rep(1:(r/nr), each=nr),
-                which_test='asymptotic',
-                which_weights='none', preprocessed=TRUE)
- length(res$pvals[, 'rawPval'])
- quantile(res$pvals[, 'rawPval'])
+  # run test
+  res <- dgsa_seq(exprmat = y, covariates = x, variables2test = t,
+    genesets = lapply(0:99, function(x) {
+      x * 30 + (1:30)
+    }),
+    cov_variables2test_eff = matrix(1),
+    sample_group = rep(1:(r / nr), each = nr),
+    which_test = "asymptotic",
+    which_weights = "none", preprocessed = TRUE)
+  length(res$pvals[, "rawPval"])
+  quantile(res$pvals[, "rawPval"])
 
- res_quant[[i]] <- res$pvals[, 'rawPval'] #res$pvals[, 'adjPval']
+  res_quant[[i]] <- res$pvals[, "rawPval"] # res$pvals[, 'adjPval']
 
- cat(i, "/", nsims, "\n", sep="")
+  cat(i, "/", nsims, "\n", sep = "")
 }
 #> 1/2
 #> 2/2
-mean(unlist(res_quant)<0.05)
+mean(unlist(res_quant) < 0.05)
 #> [1] 0.22
-qqplot(y = unlist(res_quant), x=runif(500), ylab="Raw p-values",
-      xlab = "Uniform distribution (expected under H0)")
-qqline(unlist(res_quant), distribution = qunif, col="red")
+qqplot(y = unlist(res_quant), x = runif(500), ylab = "Raw p-values",
+  xlab = "Uniform distribution (expected under H0)")
+qqline(unlist(res_quant), distribution = qunif, col = "red")
 
-#hist(unlist(res_quant)) #plot(density(unlist(res_quant)))
-#round(rowMeans(vapply(res_quant, FUN = quantile, FUN.VALUE = rep(1.1, 5))), 3)
+# hist(unlist(res_quant)) #plot(density(unlist(res_quant)))
+# round(rowMeans(vapply(res_quant, FUN = quantile, FUN.VALUE = rep(1.1, 5))), 3)
 
 
-if(interactive()){
-res_genes <- dgsa_seq(exprmat = y, covariates = x, variables2test = t,
-                    genesets = NULL,
-                    cov_variables2test_eff = matrix(1),
-                    sample_group = rep(1:(r/nr), each=nr),
-                    which_test = 'permutation',
-                    which_weights = 'none', preprocessed = TRUE,
-                    n_perm = 1000, parallel_comp = FALSE)
+if (interactive()) {
+  res_genes <- dgsa_seq(exprmat = y, covariates = x, variables2test = t,
+    genesets = NULL,
+    cov_variables2test_eff = matrix(1),
+    sample_group = rep(1:(r / nr), each = nr),
+    which_test = "permutation",
+    which_weights = "none", preprocessed = TRUE,
+    n_perm = 1000, parallel_comp = FALSE)
 
-mean(res_genes$pvals$rawPval < 0.05)
-summary(res_genes$pvals$rawPval)
+  mean(res_genes$pvals$rawPval < 0.05)
+  summary(res_genes$pvals$rawPval)
 }
 ```

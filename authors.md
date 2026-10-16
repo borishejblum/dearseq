@@ -13,6 +13,8 @@
 
 - **Iban Larrouture**. Contributor.
 
+- **Quentin Laval**. Contributor.
+
 ## Citation
 
 Source:

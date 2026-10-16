@@ -411,7 +411,7 @@ Expression Omnibus (GEO) and Bioconductor *Bioinformatics* 14:1846-1847.
     #>  [7] SummarizedExperiment_1.42.0 GenomicRanges_1.64.0       
     #>  [9] Seqinfo_1.2.0               IRanges_2.46.0             
     #> [11] S4Vectors_0.50.3            MatrixGenerics_1.24.0      
-    #> [13] matrixStats_1.5.0           dearseq_1.20.2             
+    #> [13] matrixStats_1.5.0           dearseq_1.21.0             
     #> [15] readxl_1.5.0.1              GEOquery_2.80.0            
     #> [17] Biobase_2.72.0              BiocGenerics_0.58.1        
     #> [19] generics_0.1.4             

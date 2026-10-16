@@ -23,8 +23,8 @@ experimental designs such as longitudinal data.
 |----------|--------------------------------------------------|
 | Package: | dearseq                                          |
 | Type:    | Package                                          |
-| Version: | 1.20.2                                           |
-| Date:    | 2025-08-02                                       |
+| Version: | 1.21.0                                           |
+| Date:    | 2026-10-16                                       |
 | License: | [GPL-2](http://www.gnu.org/licenses/gpl-2.0.txt) |
 
 The two main functions of the `dearseq` package are
@@ -63,6 +63,9 @@ Useful links:
 
 Authors:
 
+- Boris P. Hejblum <boris.hejblum@u-bordeaux.fr>
+  ([ORCID](https://orcid.org/0000-0003-0646-452X))
+
 - Denis Agniel <denis.agniel@gmail.com>
 
 - Marine Gauthier <marine.gauthier@u-bordeaux.fr>
@@ -72,3 +75,5 @@ Other contributors:
 - Mélanie Huchon <melanie.huchon@u-bordeaux.fr> \[contributor\]
 
 - Iban Larrouture <iban.larrouture@u-bordeaux.fr> \[contributor\]
+
+- Quentin Laval <quentin.laval@u-bordeaux.fr> \[contributor\]
