@@ -229,6 +229,13 @@ jobs:
           BiocManager::install("BiocGenerics")
         shell: Rscript {0}
 
+      - name: Install BiocSet
+        if:  env.has_RUnit == 'true'
+        run: |
+          ## Install BiocSet
+          BiocManager::install("BiocSet")
+        shell: Rscript {0}
+
       - name: Install covr
         if: github.ref == 'refs/heads/devel' && env.run_covr == 'true' && runner.os == 'Linux'
         run: |
