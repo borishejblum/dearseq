@@ -1,0 +1,76 @@
+# `dearseq`
+
+[![BioC
+status](https://www.bioconductor.org/shields/build/release/bioc/dearseq.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/dearseq/)
+[![BioC dev
+status](https://www.bioconductor.org/shields/build/devel/bioc/dearseq.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/dearseq/)
+[![R build
+status](https://github.com/borishejblum/dearseq/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/borishejblum/dearseq/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/borishejblum/dearseq/branch/devel/graph/badge.svg)](https://app.codecov.io/gh/borishejblum/dearseq?branch=devel)
+[![Download](https://www.bioconductor.org/shields/downloads/release/dearseq.svg)](https://bioconductor.org/packages/stats/bioc/dearseq)
+
+**Authors:** [Boris Hejblum](https://borishejblum.science), Denis
+Agniel, Marine Gauthier, Mélanie Huchon, Iban Larrouture  
+**License:** [GNU GPL-2](https://opensource.org/licenses/gpl-2-0)
+
+## Overview
+
+`dearseq` is a package for analyzing RNA-seq data. The 2 main functions
+of the package are
+[`dear_seq()`](https://borishejblum.github.io/dearseq/reference/dear_seq.md)
+and
+[`dgsa_seq()`](https://borishejblum.github.io/dearseq/reference/dgsa_seq.md):
+
+- **Gene-wise Differential Analysis of RNA-seq data** can be performed
+  using the function
+  [`dear_seq()`](https://borishejblum.github.io/dearseq/reference/dear_seq.md).
+- **Gene Set Analysis of RNA-seq data** can be performed using the
+  function
+  [`dgsa_seq()`](https://borishejblum.github.io/dearseq/reference/dgsa_seq.md).
+
+The methods implemented in this package are detailed in the following
+articles:
+
+> Gauthier M, Agniel D, Thiébaut R & Hejblum BP (2020). dearseq: a
+> variance component score test for RNA-Seq differential analysis that
+> effectively controls the false discovery rate, *NAR Genomics and
+> Bioinformatics* **2**(*4*):lqaa093 [DOI:
+> 10.1093/nargab/lqaa093](https://doi.org/10.1093/nargab/lqaa093)
+> [bioRxiv:635714](https://www.biorxiv.org/content/10.1101/635714v1)
+
+♻️ Reproducible code files for the results presented in Gauthier *et
+al.* (2020) can be dowloaded [here: 👉 🌐 *NAR G&B* reproducible code
+files](https://github.com/borishejblum/dearseq/releases/download/v1.7.2/NARGAB_ReproducibleCodeFiles.zip)
+
+> Agniel D & Hejblum BP (2017). Variance component score test for
+> time-course gene set analysis of longitudinal RNA-seq data,
+> [*Biostatistics*](https://academic.oup.com/biostatistics/article-abstract/18/4/589/3065599),
+> **18**(*4*):589-604.
+> [arXiv:1605.02351](https://arxiv.org/abs/1605.02351v4) [DOI:
+> 10.1093/biostatistics/kxx005](https://doi.org/10.1093/biostatistics/kxx005)
+
+More information about `dearseq` can be found [here: 👉 🌐 pkgdown
+website](https://borishejblum.github.io/dearseq/)
+
+## Installation
+
+***`dearseq` is available from
+[Bioconductor](https://www.bioconductor.org)***
+
+``` r
+
+#install.packages("BiocManager")
+BiocManager::install("dearseq")
+```
+
+The development version of `dearseq` is available on
+[GitHub](https://github.com/borishejblum/dearseq):
+
+``` r
+
+#install.packages("BiocManager")
+remotes::install_github("borishejblum/dearseq")
+```
+
+– Marine Gauthier, Denis Agniel & Boris Hejblum
